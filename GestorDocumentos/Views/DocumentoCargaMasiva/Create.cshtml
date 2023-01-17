@@ -1,0 +1,313 @@
+﻿@model GestorDocumentos.Models.Documento_Detalle
+
+@{
+    ViewBag.Title = "Crear Forma Masiva";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Create", "DocumentoCargaMasiva", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Ingreso de Documento</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.EditorFor(model => model.llaveUnica, new { htmlAttributes = new { @class = "form-control", @type = "hidden" } })
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AreaId, "Área", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.AreaId, new SelectList(ViewBag.AreaId, "value", "Text"), new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CarpetaEncabezadoid, "Carpeta", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("CarpetaEncabezadoid", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CarpetaEncabezadoid, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div id="dynamicfields">
+
+        </div>
+
+         <!--Nuevo Agregado campos identidad y nombre 16/07/2021-->
+    @*<div class="form-group">
+        @Html.Label("Identidad", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.Editor("Identidad", new { htmlAttributes = new { @class = "form-control", @type = "number" } })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Nombre Completo", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.Editor("Nombre_Completo", new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>*@
+    <!--FIN Nuevo Agregado 16/07/2021-->
+
+        @Html.EditorFor(model => model.Nombre_Ori, new { htmlAttributes = new { @class = "form-control", @type = "hidden" } })
+        @Html.EditorFor(model => model.Nombre_Des, new { htmlAttributes = new { @class = "form-control", @type = "hidden" } })
+        @Html.EditorFor(model => model.Imagen, new { htmlAttributes = new { @class = "form-control", @type = "hidden" } })
+    </div>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        Cargar Documentos
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Subir Documentos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="file">
+                        <i class="material-icons icon">file_upload</i>
+                        <input type="file" id="file" name="file" multiple="multiple" class="multifile" />
+                    </label>
+                    <div hidden>
+                        <label for="btn_guardar" class="btn btn-info">
+                            <i class="material-icons icon">cloud_done</i> Guardar Archivo
+                            <input type="submit" id="btn_guardar" name="Guardar" class="btn btn-success" style="display:none;" />
+                        </label>
+                    </div>
+
+                    <label for="btn_guardar2" class="btn btn-info">
+                        <i class="material-icons icon">cloud_done</i> Guardar Archivo
+                        <input type="button" id="btn_guardar2" name="Guardar2" class="btn btn-success" style="display:none;" />
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    <br />
+    @Html.ActionLink("Página Anterior", "Index","Documento_Detalle")
+</div>
+
+<script src="@Url.Content("~/Scripts/jquery-3.4.1.min.js")"></script>
+<script src="~/Scripts/jquery.multifile.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script type="text/javascript">
+
+    /*(function ($) {
+    })(jQuery)*/
+    window.onload = () => {
+        let CarpetaEncabezadoid = document.querySelector('#CarpetaEncabezadoid');
+        getcarpetas();
+        //console.log('sdfsdf: ' + document.querySelector('#CarpetaEncabezadoid').options.length);
+        //console.log(document.querySelector('#CarpetaEncabezadoid'));
+
+        $("#AreaId").change(getcarpetas);
+
+        function getcarpetas() {
+            let list = '';
+            $.getJSON('/Documento_Detalle/GetAreayEncabezadoCarpetaId', { idarea: $('#AreaId').val() }, function (data) {
+                $.each(data, function () {
+                    list += `<option value="${this.Value}">${this.Text}</option>`;
+                });
+                //console.log(data);
+                $('#CarpetaEncabezadoid').html(list);
+                //console.log(document.querySelector('#CarpetaEncabezadoid').options.length);
+                if (document.querySelector('#CarpetaEncabezadoid').options.length > 0) {
+                    setField();
+                } else {
+                    document.querySelector('#dynamicfields').innerHTML = '';
+                }
+            });
+        }
+
+
+
+
+        CarpetaEncabezadoid.addEventListener('click', setField);
+
+        async function setField() {
+            //console.log('inicio');
+            document.querySelector('#dynamicfields').innerHTML = '';
+            //console.log(CarpetaEncabezadoid.value);
+            let json = await fileds(CarpetaEncabezadoid.value);
+            let selects = JSON.parse(json.selects);
+            //console.log(json);
+
+            let options = JSON.parse(json.options);
+            //console.log(options);
+            console.log(selects)
+            for (let i = 0; i < selects.length; i++) {
+                let div = document.createElement('div');
+                let label = document.createElement('label');
+                label.innerText = selects[i].Descripcion;
+                label.setAttribute('class', 'control-label');
+                label.setAttribute('for', `dynamicselect${selects[i].Descripcion}`)
+                div.setAttribute('class', 'form-group');
+                let select = document.createElement('SELECT');
+                select.setAttribute('id', `dynamicselect${selects[i].Descripcion}`);
+                select.setAttribute('class', 'form-control');
+                select.setAttribute('required', true);
+
+                let defaultoption = document.createElement('option');
+                defaultoption.setAttribute('value', '');
+                defaultoption.setAttribute('selected', true);
+                defaultoption.setAttribute('disabled', true);
+                defaultoption.innerText = `Seleccionar ${selects[i].Descripcion}`;
+                select.appendChild(defaultoption);
+                div.appendChild(label);
+                div.appendChild(select);
+                document.querySelector('#dynamicfields').appendChild(div);
+                for (var x = 0; x < options.length; x++) {
+                    if (options[x].ConfCarpetaDetalleId === selects[i].ConfCarpetaDetalleId) {
+                        let option = document.createElement('option');
+                        option.setAttribute('value', options[x].Descripcion);
+                        option.innerText = options[x].Descripcion;
+                        select.appendChild(option);
+                    }
+                }
+                select.addEventListener('change', setllaveunica);
+            }
+            let fecha = JSON.parse(json.fecha);
+            //console.table(fecha);
+            if (fecha != '' && fecha != undefined && fecha != null && fecha.Tipo != 0) {
+
+                let div = document.createElement('div');
+                let label = document.createElement('label');
+                div.setAttribute('class', 'form-group');
+                label.setAttribute('class', 'control-label');
+                label.setAttribute('for', 'dateInput');
+                label.innerText = fecha.Descripcion;
+                let input = document.createElement('input');
+                input.setAttribute('type', 'date');
+                input.setAttribute('class', 'form-control');
+                input.setAttribute('name', 'dateInput');
+                input.setAttribute('id', 'dateInput');
+                input.setAttribute('required', true);
+                input.setAttribute('onkeydown', 'return false');
+                div.appendChild(label);
+                div.appendChild(input);
+                document.querySelector('#dynamicfields').appendChild(div);
+                //fchtoday();
+                input.addEventListener('change', setllaveunica);
+            }
+        }
+
+        function setllaveunica() {
+            let selects = document.querySelectorAll('#dynamicfields select');
+            let fecha = document.querySelector('#dateInput');
+            //console.log(fecha);
+            let llaveunica = '';
+            for (let i = 0; i < selects.length; i++) {
+                llaveunica += selects[i].value + '-';
+            }
+            llaveunica = llaveunica.slice(0, -1);
+            let slowdate = '';
+            //fechas****************************************
+            if (fecha != null && fecha.value != '') {
+                //console.log('fecha.value=> '+fecha.value);
+                slowdate = fecha.value.split("-");
+                //console.log(slowdate);
+                llaveunica = llaveunica + '-' + slowdate[0] + slowdate[1] + slowdate[2];
+            }
+
+            //**********************************************
+            console.log(llaveunica);
+            document.querySelector('#llaveUnica').value = llaveunica;
+        }
+
+        async function fileds(id) {
+            const settings = {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            };
+            let request = await fetch(`/Documento_Detalle/fields/${id}`, settings);
+            let response = await request.json();
+            return response;
+        }
+        /// *************************** Validación de archivos envió ********************************
+        var btn = document.getElementById("btn_guardar2");
+        btn.onclick = function () {
+
+            var archivo = document.getElementById("file").files;
+            var pasa = false;
+
+            if (archivo.length == 0) {
+                alert("La subida de imagenes es requerida");
+                return;
+            }
+            else {
+                for (x = 0; x < archivo.length; x++) {
+                    var length = ((archivo[x].size / 1024) / 1024).toFixed(2);
+                    //alert(length);
+                    if (length > 60) {
+                        alert("El archivo " + archivo[x].name + " tiene " + length + "MB supera el tamaño máximo permitido 60MB");
+                        return;
+                    }
+                    else
+                    {
+                        pasa = true;
+                    }
+                }
+
+                if (pasa == true) {
+                    $("#btn_guardar").click();
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            document.formulario.submit();
+        }
+    }
+
+    async function fchtoday() {
+        let d = new Date();
+        d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+        d = d.toJSON().slice(0, 10);
+        console.log(d);
+        //document.querySelector('#dateInput').value = d;
+    }
+
+    /// *************************** Validación de archivos envió ********************************
+    //$("#btn_guardar2").click(function () {
+    //    if ($('#file').get(0).files.length === 0) {
+    //        alert("¡No se ha cargado ningún documento!");
+    //    }
+    //    else {
+    //        $("#btn_guardar").click();
+    //    }
+    //});
+
+    $('.multifile').multifile();
+
+    $('#Nombre_Completo').bind('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z ]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+
+</script>

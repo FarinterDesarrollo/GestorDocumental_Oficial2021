@@ -1,0 +1,253 @@
+﻿@model GestorDocumentos.Models.RoleViewModels
+
+@{
+    ViewBag.Title = "Crear Rol";
+}
+<h2>@ViewBag.Title.</h2>
+<br />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+@using (Html.BeginForm("Descargar_Formato", "Role", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <form>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-info" id="download" hidden />
+            </div>
+        </div>
+    </form>
+}
+
+@using (Html.BeginForm("Carga_Masiva_Roles", "Role", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <form>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-md-10">
+                    <i class="fa fa-paperclip"></i>Clic en el ícono para subir
+                    <input type="text" id="tfile" name="tfile" class="form-control" readonly />
+                    <input type="file" id="file" name="file" class="form-control-file" style="display:none;" onchange="return mostrar_info();" />
+                </div>
+            </div>
+            <hr />
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="button" class="btn btn-info" id="activar" value="Descargar Formato" onclick="return confirmar2();" /> |
+                    <input type="button" class="btn btn-success" id="aceptar" name="aceptar" value="Registrar roles de forma masiva" onclick="return confirmar();" />
+                </div>
+            </div>
+        </div>
+    </form>
+}
+
+<div>
+    @Html.ActionLink("Página Anterior", "Index")
+</div>
+
+@************ Área de mensajes ************@
+
+@if (ViewBag.VSPCCS_NoExcel != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            swal({
+                title: "¡Error!",
+                text: "¡El documento no es un archivo de excel!",
+                icon: "error", //built in icons: success, warning, error, info
+                timer: 5000, //timeOut for auto-close
+            });
+        };
+    </script>
+}
+
+@if (ViewBag.Excel_SinDatos != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            swal({
+                title: "¡Error!",
+                text: "¡El documento de excel no contiene datos!",
+                icon: "error", //built in icons: success, warning, error, info
+                timer: 5000, //timeOut for auto-close
+            });
+        };
+    </script>
+}
+
+@if (ViewBag.Excel_Columnas != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            swal({
+                title: "¡Error!",
+                text: "¡El número de columnas del archivo de excel no es el indicado! El indicado son 2 columnas...",
+                icon: "error", //built in icons: success, warning, error, info
+                timer: 5000, //timeOut for auto-close
+            });
+        };
+    </script>
+}
+
+@if (ViewBag.Excel_Rol != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            swal({
+                title: "¡Error!",
+                text: "¡Contiene celdas vacias en la columna rol!",
+                icon: "error", //built in icons: success, warning, error, info
+                timer: 5000, //timeOut for auto-close
+            });
+        };
+    </script>
+}
+
+@if (ViewBag.Excel_RolCarEsp != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            swal({
+                title: "¡Error!",
+                text: "¡Contiene caracteres especiales en la columna rol!",
+                icon: "error", //built in icons: success, warning, error, info
+                timer: 5000, //timeOut for auto-close
+            });
+        };
+    </script>
+}
+
+@if (ViewBag.Excel_RolRepetidos != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            swal({
+                title: "¡Error!",
+                text: "¡Contiene datos repetidos en celdas de la columna rol!",
+                icon: "error", //built in icons: success, warning, error, info
+                timer: 5000, //timeOut for auto-close
+            });
+        };
+    </script>
+}
+
+@if (ViewBag.Excel_Cargado != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            swal({
+                title: "¡Datos Cargados Satisfactoriamente!",
+                text: "¡Los datos fueron cargados! Revisar pantalla de lista de usuarios...",
+                icon: "success", //built in icons: success, warning, error, info
+                timer: 5000, //timeOut for auto-close
+            });
+        };
+    </script>
+}
+
+@if (ViewBag.Excel_NombreColumna != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            swal({
+                title: "¡Error!",
+                text: "¡El nombre de la columna no son los correctos! Tiene que ser Rol.",
+                icon: "error", //built in icons: success, warning, error, info
+                timer: 5000, //timeOut for auto-close
+            });
+        };
+    </script>
+}
+
+@if (ViewBag.Excel_Error != null)
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            swal({
+                title: "¡Error!",
+                text: "¡Se produjo una excepción en el programa al momento de la carga!, Reportar por medio de ticket.",
+                icon: "error", //built in icons: success, warning, error, info
+                timer: 5000, //timeOut for auto-close
+            });
+        };
+    </script>
+}
+
+@section Scripts{
+    <script type="text/javascript">
+        function confirmar() {
+            var archivo = $("#file").val();
+
+            swal({
+                title: "¡Importante!",
+                text: "¿Deseá realizar la carga de registro de roles?",
+                type: "info",
+                icon: "info",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                buttons: true,
+                dangerMode: false,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    if (archivo == "") {
+                        swal({
+                            title: "¡Error!",
+                            text: "¡Tiene que seleccionar un archivo!",
+                            icon: "error", //built in icons: success, warning, error, info
+                            timer: 5000, //timeOut for auto-close
+                        });
+                    } else {
+                        $("form").unbind('submit').submit();
+                    }
+                } else {
+                    swal("Cancelado", "¡Ha cancelado la carga del documento!", "error");
+                    return false;
+                }
+            });
+        }
+
+        function confirmar2() {
+            swal({
+                title: "¡Importante!",
+                text: "¿Deseá descargar el formato de carga?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                buttons: true,
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $("#download").click();
+                } else {
+                    swal("Cancelado", "¡Ha cancelado la descarga del documento!", "error");
+                }
+            });
+        }
+
+        function mostrar_info() {
+            var info = $("#file").val();
+            if (info != '') {
+                $("#tfile").val(info);
+            }
+            else {
+                $("#tfile").val("Ningún archivo seleccionado");
+            }
+        }
+
+        $("i").click(function () {
+            $("input[type='file']").trigger('click');
+        });
+
+        $('input[type="file"]').on('change', function () {
+            var val = $(this).val();
+            $(this).siblings('span').text(val);
+        })
+    </script>
+}
+
+<style>
+    .fa {
+        cursor: pointer;
+    }
+</style>

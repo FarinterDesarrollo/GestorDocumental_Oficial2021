@@ -1,0 +1,132 @@
+﻿@model IEnumerable<GestorDocumentos.Models.Tipo_Campo>
+
+@{
+    ViewBag.Title = "Listado de Tipo de Campos";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @Html.ActionLink("Crear Nuevo", "Create")
+</p>
+<table class="table-responsive-pm" id="tabla">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Longitud)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Automatico)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Longitud)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Automatico)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Eliminar", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $('th').click(function () {
+            var table = $(this).parents('table').eq(0)
+            var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+            this.asc = !this.asc
+            if (!this.asc) {
+                rows = rows.reverse()
+            }
+            for (var i = 0; i < rows.length; i++) {
+                table.append(rows[i])
+            }
+            setIcon($(this), this.asc);
+        })
+
+        function comparer(index) {
+            return function (a, b) {
+                var valA = getCellValue(a, index),
+                    valB = getCellValue(b, index)
+                return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB)
+            }
+        }
+
+        function getCellValue(row, index) {
+            return $(row).children('td').eq(index).html()
+        }
+
+        function setIcon(element, asc) {
+            $("th").each(function (index) {
+                $(this).removeClass("sorting");
+                $(this).removeClass("asc");
+                $(this).removeClass("desc");
+            });
+            element.addClass("sorting");
+            if (asc) element.addClass("asc");
+            else element.addClass("desc");
+        }
+
+        $(document).ready(function () {
+            $('#tabla').DataTable({
+                "paging": true,
+                "ordering": true,
+                "info": true,
+                "pagingType": "full_numbers",
+                //Lenguaje:
+                "language": {
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "previous": "Anterior",
+                        "next": "Siguiente",
+                    },
+                    "info": "Mostrar Entradas de _START_ a _TOTAL_",
+                    "infoEmpty": "Total de Entradas 0",
+                    "infoFiltered": "Filtrado de _MAX_ entradas totales",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "search": "Filtrar"
+                }
+            });
+        });
+    </script>
+}
+
+    <style>
+        table tr th {
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /*.sorting {
+            background-color: #D4D4D4;
+        }*/
+
+        .asc:after {
+            content: ' ↑';
+        }
+
+        .desc:after {
+            content: " ↓";
+        }
+    </style>

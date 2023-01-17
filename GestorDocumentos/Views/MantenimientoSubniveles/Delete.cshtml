@@ -1,0 +1,56 @@
+﻿@model GestorDocumentos.Models.MantenimientoSubniveles
+
+@{
+    ViewBag.Title = "Eliminar";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<h3>¿Estás seguro que quieres eliminar esto?</h3>
+<div>
+    <h4>Mantenimiento de Subniveles</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.LabelFor(model => model.Areas.Descripcion, "Área", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.Areas.Descripcion)
+        </dd>
+
+        <dt>
+            @Html.LabelFor(model => model.ConfCarpetaEncabezado.Descripcion, "Carpeta", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.ConfCarpetaEncabezado.Descripcion)
+        </dd>
+
+        <dt>
+            @Html.LabelFor(model => model.ConfCarpetaDetalle.Descripcion, "Nombre Nivel", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.ConfCarpetaDetalle.Descripcion)
+        </dd>
+
+        <dt>
+            @Html.LabelFor(model => model.Descripcion, "Descripción", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+            @Html.ActionLink("Página Anterior", "Index")
+        </div>
+    }
+</div>

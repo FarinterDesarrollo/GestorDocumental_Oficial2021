@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Gestor de Documentos</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="@Url.Content("~/Scripts/Global.js")"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
+    @*<script src="~/Scripts/moment.js"></script>
+        <script src="~/Scripts/moment.min.js"></script>
+        <script src="~/Scripts/moment-with-locales.js"></script>*@
+    <script src="@Url.Content("~/Scripts/moment.js")"></script>
+    <script src="@Url.Content("~/Scripts/moment-with-locales.js")"></script>
+    <link rel="stylesheet" href="~/Content/DataTables/css/jquery.dataTables.min.css">
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-xl navbar-dark bg-primary">
+        @*<nav class="navbar navbar-dark bg-primary">*@
+        <div class="container-fluid">
+
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            @Html.ActionLink("Gestor de Documentos", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+
+            <div class="navbar-collapse collapse" id="navbarSupportedContent">
+
+                <ul class="navbar-nav mr-auto">
+                    @if (Request.IsAuthenticated && User.IsInRole("ADMINISTRADOR"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="material-icons icon mr-2">face</i>Control de Usuarios</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <lu class="dropdown-item">@Html.ActionLink("Roles", "Index", "Role")</lu>
+                                <lu class="dropdown-item">@Html.ActionLink("Crear Usuarios", "Lista_RolesxUsuario", "Account")</lu>
+                                <lu class="dropdown-item">@Html.ActionLink("Mantenimiento de Usuarios", "Delete", "Account")</lu>
+                                @* <lu class="dropdown-item">@Html.ActionLink("Editar Usuario", "ListaDeUsuariosEdit", "EditarUsuario")</lu>*@
+                                @*   <lu class="dropdown-item">@Html.ActionLink("Mantenimiento Pantallas", "Index", "Pantallas")</lu>*@
+                                <lu class="dropdown-item">@Html.ActionLink("Roles x Pantallas", "Index", "RolPermisos")</lu>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="material-icons icon mr-2">fingerprint</i>Permisos</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <lu class="dropdown-item">@Html.ActionLink("≈ Permiso por Área", "Index", "RoleXAreas")</lu>
+                                <lu class="dropdown-item">@Html.ActionLink("≈ Permiso por Carpeta", "Index", "RoleXAreaXCarpetas")</lu>
+                                <lu class="dropdown-item">@Html.ActionLink("≈ Permiso por Subniveles", "Index", "RoleXAreaXCarpetasXSubniveles")</lu>
+                            </div>
+                        </li>
+                    }
+                    @if ((Request.IsAuthenticated && User.IsInRole("ADMINISTRADOR CARPETA")) || (Request.IsAuthenticated && User.IsInRole("ADMINISTRADOR")))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="material-icons icon mr-2">build</i>Config.Carpetas</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <lu class="dropdown-item">@Html.ActionLink("» Áreas", "Index", "Areas")</lu>
+                                <lu class="dropdown-item">@Html.ActionLink("» Carpeta Encabezado", "Index", "ConfCarpetaEncabezadoes")</lu>
+                                <lu class="dropdown-item">@Html.ActionLink("» Carpeta Detalle", "Index", "ConfCarpetaDetalles")</lu>
+                                <lu class="dropdown-item">@Html.ActionLink("» Mantenimiento de Subniveles", "Index", "MantenimientoSubniveles")</lu>
+                            </div>
+                        </li>
+                    }
+
+                    @if (((Request.IsAuthenticated) && (User.IsInRole("ADMINISTRADOR"))) || ((Request.IsAuthenticated) && (User.IsInRole("ADMINISTRADOR CARPETA"))) || ((Request.IsAuthenticated) && (User.IsInRole("GENERADOR REPORTE"))))
+                    {
+
+                    }
+                    else
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="material-icons icon mr-2">find_in_page</i>Documentos</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <lu class="dropdown-item">@Html.ActionLink("• Agregar Documento", "Index", "Documento_Detalle")</lu>
+                                <lu class="dropdown-item">@Html.ActionLink("• Busqueda Documento", "Index", "Visualizacion")</lu>
+                                <lu class="dropdown-item">@Html.ActionLink("• Busqueda con filtros de Documento", "Index", "VisualizacionConFiltros")</lu>
+
+                            </div>
+                        </li>
+                    }
+
+                    @if ((Request.IsAuthenticated) && (User.IsInRole("GENERADOR REPORTE")))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="material-icons icon mr-2">find_in_page</i>Reporte</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <lu class="dropdown-item">@Html.ActionLink("• Reporte de Documentos", "Index", "Reporte_Documentos")</lu>
+                            </div>
+                        </li>
+                    }
+
+                </ul>
+
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        @Html.Partial("_LoginPartial")
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+
+    <main>
+        @Html.Partial("~/Views/Shared/_Flash.cshtml")
+        @RenderBody()
+        <hr style="border-color:burlywood" />
+        <br />
+        <br />
+        @*<footer>
+                <p>&copy; @DateTime.Now.Year - Mi aplicación ASP.NET</p>
+            </footer>*@
+    </main>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/popper")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/pagination")
+    @Scripts.Render("~/bundles/main")
+    @Scripts.Render("~/bundles/DataTables/jquery")
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/Scripts/sweetalert")
+    @RenderSection("scripts", required: false)
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+﻿@model GestorDocumentos.Models.RoleXAreaXCarpeta
+
+@{
+    ViewBag.Title = "Eliminar";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<h3>¿Estás seguro que quieres eliminar esto?</h3>
+<div>
+    <h4>Rol por Área por Carpeta</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Rol
+            @*@Html.DisplayNameFor(model => model.RoleName)*@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RoleName)
+        </dd>
+        <dt>
+            Área
+            @*@Html.DisplayNameFor(model => model.Areas.Descripcion)*@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Areas.Descripcion)
+        </dd>
+
+        <dt>
+            Carpeta
+            @*@Html.DisplayNameFor(model => model.ConfCarpetaEncabezado.Descripcion)*@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ConfCarpetaEncabezado.Descripcion)
+        </dd>
+
+
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+            @Html.ActionLink("Página Anterior", "Index")
+        </div>
+    }
+</div>

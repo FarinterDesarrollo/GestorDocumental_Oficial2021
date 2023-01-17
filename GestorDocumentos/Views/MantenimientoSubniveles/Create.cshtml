@@ -1,0 +1,170 @@
+﻿@model GestorDocumentos.Models.MantenimientoSubniveles
+
+@{
+    ViewBag.Title = "Crear";
+}
+
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Mantenimiento de Subniveles</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.AreaId, "Área", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("AreaId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AreaId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConfCarpetaDetalleId, "Carpeta", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("CarpetaEncabezadoid", ViewBag.ListaSubniveles as List<SelectListItem>, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConfCarpetaDetalleId, "Nombre Nivel", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("ConfCarpetaDetalleId", new SelectList(string.Empty, "Value", "Text"), "---Select Detalle---", htmlAttributes: new { @class = "form-control" })
+
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Descripcion, "Descripción", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @class = "form-control", oninput = "InputToUpper(this);" } })
+                @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Crear" class="button" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script src="@Url.Content("~/Scripts/jquery-3.4.1.min.js")"></script>
+    @*<script src="@Url.Content("~/Scripts/Niveles/editar.js")"></script>*@
+    <script src="@Url.Content("~/Scripts/Niveles/create.js")"></script>
+
+    <script type="text/javascript">
+        function seleccionar() {
+            var valor = $("#iddetalle").data("value");
+            $("#ConfCarpetaDetalleId > option[value='" + valor + "']").attr("selected", true);
+
+        };
+
+        $("#AreaId").change(function () {
+            var idarea = $('select[id=AreaId]').val();
+            $('#CarpetaEncabezadoid').empty();
+            $('#ConfCarpetaDetalleId').empty();
+
+            $.getJSON('/MantenimientoSubniveles/GetAreayEncabezadoCarpetaId', { idarea: $('#AreaId').val() }, function (data) {
+                $.each(data, function () {
+                    $('#CarpetaEncabezadoid').append('<option value=' +
+                        this.Value + '>' + this.Text + '</option>');
+                });
+
+                var validar = $("#CarpetaEncabezadoid").val();
+
+                if (validar === null) {
+                    $('#ConfCarpetaDetalleId').attr({ "placeholder": "--- Detalles ---" });
+                    //$('#ConfCarpetaDetalleId').val("--- Detalles ---" );
+                }
+                else {
+                    var idcarpeta = $('select[id=CarpetaEncabezadoid]').val();
+
+                    $.getJSON('/MantenimientoSubniveles/GetCarpetaDetalleEncabezadoId', { idcarpeta: $('#CarpetaEncabezadoid').val() }, function (data) {
+                        $.each(data, function () {
+                            $('#ConfCarpetaDetalleId').append('<option value=' +
+                                this.Value + '>' + this.Text + '</option>');
+                        });
+                    });
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            var idarea = $('select[id=AreaId]').val();
+            $('#CarpetaEncabezadoid').empty();
+            $('#ConfCarpetaDetalleId').empty();
+
+            $.getJSON('/MantenimientoSubniveles/GetAreayEncabezadoCarpetaId', { idarea: $('#AreaId').val() }, function (data) {
+                $.each(data, function () {
+                    $('#CarpetaEncabezadoid').append('<option value=' +
+                        this.Value + '>' + this.Text + '</option>');
+                });
+
+                var validar = $("#CarpetaEncabezadoid").val();
+
+                if (validar === null) {
+                    $('#ConfCarpetaDetalleId').attr({ "placeholder": "--- Detalles ---" });
+                    //$('#ConfCarpetaDetalleId').val("--- Detalles ---" );
+                }
+                else {
+                    var idcarpeta = $('select[id=CarpetaEncabezadoid]').val();
+
+                    $.getJSON('/MantenimientoSubniveles/GetCarpetaDetalleEncabezadoId', { idcarpeta: $('#CarpetaEncabezadoid').val() }, function (data) {
+                        $.each(data, function () {
+                            $('#ConfCarpetaDetalleId').append('<option value=' +
+                                this.Value + '>' + this.Text + '</option>');
+                        });
+                        //Agregado 07/01/2020
+                        var id1 = $('select[id=AreaId]').val();
+                        var id2 = $('select[id=CarpetaEncabezadoid]').val();
+                        var id3 = $('select[id=ConfCarpetaDetalleId]').val();
+
+                        $.getJSON('/MantenimientoSubniveles/GetControlarTipodeCampoId', { id1: $('#AreaId').val(), id2: $('#CarpetaEncabezadoid').val(), id3: $('#ConfCarpetaDetalleId').val() }, function (data) {
+                            $.each(data, function (i, field) {
+                                var maximo = parseInt(field.Text);
+
+                                $('#Descripcion').attr({ "maxlength": maximo });
+                            });
+                        });
+                    });
+                }
+            });
+
+        });
+
+        $("#ConfCarpetaDetalleId").change(function () {
+            var id1 = $('select[id=AreaId]').val();
+            var id2 = $('select[id=CarpetaEncabezadoid]').val();
+            var id3 = $('select[id=ConfCarpetaDetalleId]').val();
+
+            $.getJSON('/MantenimientoSubniveles/GetControlarTipodeCampoId', { id1: $('#AreaId').val(), id2: $('#CarpetaEncabezadoid').val(), id3: $('#ConfCarpetaDetalleId').val() }, function (data) {
+                $.each(data, function (i, field) {
+                    var maximo = parseInt(field.Text);
+                    $('#Descripcion').attr({ "maxlength": maximo });
+                });
+            });
+        });
+
+        $('#Descripcion').bind('keypress', function (event) {
+            var regex = new RegExp("^[a-zA-Z0-9]+$");
+            var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+            if (!regex.test(key)) { event.preventDefault(); return false; }
+        });
+
+    </script>
+
+}
+
+<div>
+    @Html.ActionLink("Página Anterior", "Index")
+</div>

@@ -1,0 +1,75 @@
+﻿@model GestorDocumentos.Models.Pantallas
+
+@{
+    ViewBag.Title = "Editar Pantalla";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+</head>
+<body>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>Pantallas</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.IdPantalla)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.pantalla, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.pantalla, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.pantalla, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Guardar" class="btn btn-success" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        @Html.ActionLink("Página Anterior", "Index")
+    </div>
+</body>
+</html>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $("#pantalla").keypress(function (key) {
+            window.console.log(key.charCode)
+            if ((key.charCode < 97 || key.charCode > 122)//letras mayusculas
+            && (key.charCode < 65 || key.charCode > 90) //letras minusculas
+            //&& (key.charCode != 45) //retroceso
+            && (key.charCode != 241) //ñ
+            && (key.charCode != 209) //Ñ
+            && (key.charCode != 32) //espacio
+            && (key.charCode != 225) //á
+            && (key.charCode != 233) //é
+            && (key.charCode != 237) //í
+            && (key.charCode != 243) //ó
+            && (key.charCode != 250) //ú
+            && (key.charCode != 193) //Á
+            && (key.charCode != 201) //É
+            && (key.charCode != 205) //Í
+            && (key.charCode != 211) //Ó
+            && (key.charCode != 218) //Ú
+
+             )
+              return false;
+            });
+
+    </script>
+
+}

@@ -1,0 +1,48 @@
+﻿@model GestorDocumentos.Models.Tipo_Campo
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<h3>¿Estás seguro que quieres eliminar esto?</h3>
+<div>
+    <h4>Tipo de Campo</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Longitud)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Longitud)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Automatico)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Automatico)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+            @Html.ActionLink("Página Anterior", "Index")
+        </div>
+    }
+</div>

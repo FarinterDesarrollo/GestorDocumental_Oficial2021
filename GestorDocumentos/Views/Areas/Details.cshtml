@@ -1,0 +1,25 @@
+﻿@model GestorDocumentos.Models.Areas
+
+@{
+    ViewBag.Title = "Detalles";
+}
+
+<h2>Detalles</h2>
+
+<div>
+    <h5>Áreas</h5>
+    <hr />
+    <div class="form-horizontal">
+        <div class="form-group">
+
+            @Html.LabelFor(model => model.Descripcion, "Nombre de Área", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.Descripcion)
+            </div>
+        </div>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Página Anterior", "Index")
+</p>

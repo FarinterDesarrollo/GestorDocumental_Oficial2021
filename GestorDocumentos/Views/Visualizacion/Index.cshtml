@@ -1,0 +1,316 @@
+﻿@model List<GestorDocumentos.Models.DocDetPermisos>
+
+@{
+    ViewBag.Title = "Listado de Documentos";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm())
+{
+    <p>
+
+        @*Buscar Documento: @Html.TextBox("Nombre")*@
+        @*@Html.EditorFor(model => model.llaveUnica, new { htmlAttributes = new { @class = "form-control" } })*@
+        <div class="table table-responsive">
+            <table class="table" id="tablita">
+                <thead>
+                    <tr>
+                        <td>
+                            Documento a Buscar:
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="text" id="Nombre" name="Nombre" class="form-control" oninput="InputToUpper(this);">
+                            @*<input type="text" id="Nombre" name="Nombre" class="form-control">*@
+                        </td>
+                        <td>
+                            <input type="submit" value="Buscar" id="Buscar" class="btn btn-info" hidden />
+                            <input type="button" id="Buscar2" value="Buscar" class="btn btn-info" />
+                            @*<input type="button" value="Limpiar" id="limpiar" class="btn btn-info" />*@
+                            @Html.ActionLink("Limpiar", "Index", null, htmlAttributes: new { @class = "btn btn-info" })
+                        </td>
+                        <td>
+                            @Html.Display("BusqCant", new { htmlAttributes = new { @class = "form-control col-md-10", @value = ViewBag.BusqCant } })
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </p>
+
+    <div class="table-responsive-pm">
+        <table class="table" id="tabla">
+            <thead>
+                <tr>
+                    <th>
+                        <label style="font-weight:bold"> N° </label>
+                    </th>
+                    <th>
+                        <label style="font-weight:bold"> Área </label>
+                    </th>
+                    <th>
+                        <label style="font-weight:bold"> Carpeta</label>
+                    </th>
+                    <th>
+                        <label style="font-weight:bold">Codificación</label>
+                    </th>
+                    <th>
+                        <label style="font-weight:bold">Nombre Origen </label>
+                    </th>
+                    <th>
+                        <label style="font-weight:bold">Nombre Destino</label>
+                    </th>
+                    <th>
+                        <label style="font-weight:bold">Fecha del Sistema</label>
+                    </th>
+                    <th>
+                        <label style="font-weight:bold">Fecha de Registro</label>
+                    </th>
+                    <th scope="row"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.area)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.carpeta)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.llaveunica)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombreori)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nombredes)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FechaRegistro)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FechaActualizacion)
+                        </td>
+                        <td>
+                            <div class="editar">
+                                @Html.ActionLink("Editar", "Edit", new { id = item.Id, llaveUnica = item.llaveunica.Trim() })
+                            </div>
+                            <div class="consultar">
+                                @Html.ActionLink("Detalles", "Details", new { id = item.Id })
+                            </div>
+                            <div class="eliminar">
+                                @Html.ActionLink("Eliminar", "Delete", new { id = item.Id })
+                            </div>
+                            <div class="consulta">
+                                @Html.ActionLink("Ver Documento", "Imagen", new { id = item.Id })
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+@*<nav aria-label="Page navigation example">
+        <ul class="pagination"></ul>
+    </nav>*@
+
+@section Scripts
+{
+    <script type="text/javascript">
+        //$('th').click(function () {
+        //    var table = $(this).parents('table').eq(0)
+        //    var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+        //    this.asc = !this.asc
+        //    if (!this.asc) {
+        //        rows = rows.reverse()
+        //    }
+        //    for (var i = 0; i < rows.length; i++) {
+        //        table.append(rows[i])
+        //    }
+        //    setIcon($(this), this.asc);
+        //})
+
+        //function comparer(index) {
+        //    return function (a, b) {
+        //        var valA = getCellValue(a, index),
+        //            valB = getCellValue(b, index)
+        //        return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB)
+        //    }
+        //}
+
+        //function getCellValue(row, index) {
+        //    return $(row).children('td').eq(index).html()
+        //}
+
+        //function setIcon(element, asc) {
+        //    $("th").each(function (index) {
+        //        $(this).removeClass("sorting");
+        //        $(this).removeClass("asc");
+        //        $(this).removeClass("desc");
+        //    });
+        //    element.addClass("sorting");
+        //    if (asc) element.addClass("asc");
+        //    else element.addClass("desc");
+        //}
+
+        //$('#limpiar').click(function () {
+        //    $("#tabla").find("tr:gt(0)").remove();
+        //    $("#Nombre").empty();
+        //    $("#Buscar").click();
+        //});
+
+        $("#Buscar").click(function () {
+            $("#BusqCant").val("");
+        });
+
+        $("#Buscar2").click(function () {
+            var nombre = $("#Nombre").val();
+            if (nombre == null || nombre == "") {
+                alert("¡El valor de búsqueda esta vacio!");
+            }
+            else {
+                $("#Buscar").click();
+            }
+        });
+
+        // Write on keyup event of keyword input element
+        //$(document).ready(function () {
+        //    $("#Nombre").keyup(function () {
+        //        _this = this;
+        //        // Show only matching TR, hide rest of them
+        //        $.each($("#tabla tbody tr"), function () {
+        //            if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
+        //                $(this).hide();
+        //            else
+        //                $(this).show();
+        //        });
+        //    });
+        //});
+
+        //Permisos de pantalla: 07/05/2020
+
+        $(Document).ready(function () {
+            var Pantalla = "Listado de documentos";
+
+            $.getJSON('/Documento_Detalle/GetPermisosConsulta', { pantalla: Pantalla }, function (data) {
+                $.each(data, function (i, field) {
+                    if (this.Text == "2") {
+                        $('div.consulta').on("click", function (e) {
+                            alert("No tiene permiso de consultar Documento");
+                            e.preventDefault();
+                        });
+                        $('div.consultar').on("click", function (e) {
+                            alert("No tiene permiso de consultar Documento");
+                            e.preventDefault();
+                        });
+                    }
+                });
+            });
+
+            $.getJSON('/Documento_Detalle/GetPermisosCrear', { pantalla: Pantalla }, function (data) {
+                $.each(data, function (i, field) {
+                    if (this.Text == "2") {
+                        $('div.crear').on("click", function (e) {
+                            alert("No tiene permiso de crear Documento");
+                            e.preventDefault();
+                        });
+                    }
+                });
+            });
+
+            $.getJSON('/Documento_Detalle/GetPermisosEditar', { pantalla: Pantalla }, function (data) {
+                $.each(data, function (i, field) {
+                    if (this.Text == "2") {
+                        $('div.editar').on("click", function (e) {
+                            alert("No tiene permiso de editar Documento");
+                            e.preventDefault();
+                        });
+                    }
+                });
+            });
+
+            $.getJSON('/Documento_Detalle/GetPermisosEliminar', { pantalla: Pantalla }, function (data) {
+                $.each(data, function (i, field) {
+                    if (this.Text == "2") {
+                        $('div.eliminar').on("click", function (e) {
+                            alert("No tiene permiso de eliminar Documento");
+                            e.preventDefault();
+                        });
+                    }
+                });
+            });
+     
+            $('#tabla').DataTable({
+                "paging": true,
+                "ordering": true,
+                "info": true,
+                "pagingType": "full_numbers",
+                "searching": false,
+                //Lenguaje:
+                "language": {
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "previous": "Anterior",
+                        "next": "Siguiente",
+                    },
+                    "info": "Mostrar Entradas de _START_ a _TOTAL_",
+                    "infoEmpty": "Total de Entradas 0",
+                    "infoFiltered": "Filtrado de _MAX_ entradas totales",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "search": "Filtrar"
+                }
+                //,
+                //"columnDefs": [{
+                //    targets: 6, render: function (data) {
+                //        return moment(data).format('DD/MM/YYYY hh:mm:ss A');
+                //    }
+                //}, {
+                //    targets: 7, render: function (data) {
+                //        return moment(data).format('DD/MM/YYYY hh:mm:ss A');
+                //    }
+                //}]
+                
+            });
+
+        });
+
+    </script>
+}
+
+
+<style>
+    table tr th {
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /*.sorting {
+            background-color: #D4D4D4;
+        }*/
+
+    .asc:after {
+        content: ' ↑';
+    }
+
+    .desc:after {
+        content: " ↓";
+    }
+</style>

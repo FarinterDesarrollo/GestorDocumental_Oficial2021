@@ -1,0 +1,17 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    ViewBag.Title = "Error";
+}
+
+@{
+    ViewBag.Message = Session["Error"] as string;
+}
+
+<div>
+    <p>Error</p>
+    @ViewBag.Message
+</div>
+<h1 class="text-danger">Error.</h1>
+<h2 class="text-danger">Error al procesar la solicitud.</h2>
+

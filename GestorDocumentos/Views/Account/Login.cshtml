@@ -1,0 +1,46 @@
+﻿@using GestorDocumentos.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Iniciar sesión"; Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+}
+
+
+<div class="login-container">
+    <section id="loginForm">
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div action="" class="form-login">
+                <h3 class="s-h3">Sistema de Gestor de Documentos</h3>
+                <ul class="login-nav"></ul>
+                <label for="login-input-user" class="col-md-2 login__label">
+                    Correo Electrónico
+                </label>
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control login__input" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                <label for="login-input-password" class="col-md-2 login__label">
+                    Contraseña
+                </label>
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control login__input" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+
+                <button type="submit" class="login__submit">Ingresar</button>
+            </div>
+            @*<a link href="ResetPassword" class="login__forgot">Cambiar contraseña</a>*@
+            @*@Html.HiddenFor(m => m.malsesion)*@
+        }
+    </section>
+    @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+</div>
+    
+<script type="text/javascript">
+    function mal() {
+        var mal = document.getElementsByName("malsesion").values;
+        alert(mal);
+    } 
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

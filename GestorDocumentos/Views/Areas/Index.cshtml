@@ -1,0 +1,154 @@
+﻿@model IEnumerable<GestorDocumentos.Models.Areas>
+
+@{
+    ViewBag.Title = "Listado de Áreas";
+}
+
+<h2>Listado de Áreas</h2>
+
+<p>
+    @Html.ActionLink("Crear Nueva Área", "Create") @Html.ActionLink("Refrescar", "Index", null, htmlAttributes: new { @class = "btn btn-info" })
+</p>
+
+@*<div class="form-group">
+    <input type="text" class="form-control pull-right" style="width:20%" id="search" placeholder="Type to search table...">
+</div>*@
+
+<div class="table-responsive-pm">
+    <table class="table" id="tabla">
+        <thead>
+            <tr>
+                <th>
+                    <label style="font-weight:bold">Nombre de Áreas</label>
+                </th>
+                <th scope="row"></th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Descripcion)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
+                        @Html.ActionLink("Eliminar", "Delete", new { id = item.Id })
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+@*<nav aria-label="Page navigation example">
+    <ul class="pagination"></ul>
+</nav>*@
+
+
+@section Scripts
+{
+    @*<script src="@Url.Content("~/Scripts/jquery-3.4.1.min.js")"></script>*@
+    <script type="text/javascript">
+        $('th').click(function () {
+            var table = $(this).parents('table').eq(0)
+            var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+            this.asc = !this.asc
+            if (!this.asc) {
+                rows = rows.reverse()
+            }
+            for (var i = 0; i < rows.length; i++) {
+                table.append(rows[i])
+            }
+            setIcon($(this), this.asc);
+        })
+
+        function comparer(index) {
+            return function (a, b) {
+                var valA = getCellValue(a, index),
+                    valB = getCellValue(b, index)
+                return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB)
+            }
+        }
+
+        function getCellValue(row, index) {
+            return $(row).children('td').eq(index).html()
+        }
+
+        function setIcon(element, asc) {
+            $("th").each(function (index) {
+                $(this).removeClass("sorting");
+                $(this).removeClass("asc");
+                $(this).removeClass("desc");
+            });
+            element.addClass("sorting");
+            if (asc) element.addClass("asc");
+            else element.addClass("desc");
+        }
+
+        //Buscador:
+
+        // Write on keyup event of keyword input element
+        $(Document).ready(function () {
+            //$("#search").keyup(function () {
+            //    _this = this;
+            //    // Show only matching TR, hide rest of them
+            //    $.each($("#tabla tbody tr"), function () {
+            //        if ($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
+            //            $(this).hide();
+            //        else
+            //            $(this).show();
+            //    });
+            //});
+
+            $('#tabla').DataTable({
+                "paging": true,
+                "ordering": true,
+                "info": true,
+                "pagingType": "full_numbers",
+                //Lenguaje:
+                "language": {
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "previous": "Anterior",
+                        "next": "Siguiente",
+                    },
+                    "info": "Mostrar Entradas de _START_ a _TOTAL_",
+                    "infoEmpty": "Total de Entradas 0",
+                    "infoFiltered": "Filtrado de _MAX_ entradas totales",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "search": "Filtrar"
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    table tr th {
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /*.sorting {
+            background-color: #D4D4D4;
+        }*/
+
+    .asc:after {
+        content: ' ↑';
+    }
+
+    .desc:after {
+        content: " ↓";
+    }
+</style>

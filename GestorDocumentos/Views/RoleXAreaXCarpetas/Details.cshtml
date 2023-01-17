@@ -1,0 +1,46 @@
+﻿@model GestorDocumentos.Models.RoleXAreaXCarpeta
+
+@{
+    ViewBag.Title = "Detalles";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <h4>Rol por Área por Carpeta</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Rol
+            @*@Html.DisplayNameFor(model => model.RoleName)*@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RoleName)
+        </dd>
+        <dt>
+            Área
+            @*@Html.DisplayNameFor(model => model.Areas.Descripcion)*@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Areas.Descripcion)
+        </dd>
+
+        <dt>
+            Carpeta
+            @*@Html.DisplayNameFor(model => model.ConfCarpetaEncabezado.Descripcion)*@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ConfCarpetaEncabezado.Descripcion)
+        </dd>
+
+
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Página Anterior", "Index")
+</p>

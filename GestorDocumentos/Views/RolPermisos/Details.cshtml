@@ -1,0 +1,86 @@
+﻿@model GestorDocumentos.Models.RolPermisos
+
+@{
+    ViewBag.Title = "Detalle de Rol x Pantalla";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div>
+        <h4>RolPermisos</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Pantallas.pantalla)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Pantallas.pantalla)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.RoleName)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.RoleName)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Pantalla)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Pantalla)
+            </dd>
+    
+            <dt>
+                @*@Html.DisplayNameFor(model => model.consultar)*@
+                <label class="control-label col-md-2">Consultar</label>
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.consultar)
+            </dd>
+    
+            <dt>
+                @*@Html.DisplayNameFor(model => model.crear)*@
+                <label class="control-label col-md-2">Crear</label>
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.crear)
+            </dd>
+    
+            <dt>
+                @*@Html.DisplayNameFor(model => model.editar)*@
+                <label class="control-label col-md-2">Editar</label>
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.editar)
+            </dd>
+    
+            <dt>
+                @*@Html.DisplayNameFor(model => model.eliminar)*@
+                <label class="control-label col-md-2">Eliminar</label>
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.eliminar)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Editar", "Edit", new { id = Model.id }) |
+        @Html.ActionLink("Página Anterior", "Index")
+    </p>
+</body>
+</html>

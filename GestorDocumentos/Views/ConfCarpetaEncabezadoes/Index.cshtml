@@ -1,0 +1,139 @@
+﻿@model IEnumerable<GestorDocumentos.Models.ConfCarpetaEncabezado>
+
+@{
+    ViewBag.Title = "Listado de Configuración de Carpeta Encabezado";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @Html.ActionLink("Crear Nuevo", "Create") @Html.ActionLink("Refrescar", "Index", null, htmlAttributes: new { @class = "btn btn-info" })
+</p>
+<div class="table-responsive-pm">
+    <table class="table" id="tabla">
+        <thead>
+            <tr>
+                <th>
+                    <label style="font-weight:bold">Área</label>
+                </th>
+                <th>
+                    <label style="font-weight:bold">Área</label>
+                </th>
+                <th>
+                    <label style="font-weight:bold">Cantidad de Sub Niveles</label>
+                </th>
+                <th scope="row"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Areas.Descripcion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Descripcion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Subniveles)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
+                        @Html.ActionLink("Eliminar", "Delete", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@*<nav aria-label="Page navigation example">
+    <ul class="pagination"></ul>
+</nav>*@
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $('th').click(function () {
+            var table = $(this).parents('table').eq(0)
+            var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+            this.asc = !this.asc
+            if (!this.asc) {
+                rows = rows.reverse()
+            }
+            for (var i = 0; i < rows.length; i++) {
+                table.append(rows[i])
+            }
+            setIcon($(this), this.asc);
+        })
+
+        function comparer(index) {
+            return function (a, b) {
+                var valA = getCellValue(a, index),
+                    valB = getCellValue(b, index)
+                return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB)
+            }
+        }
+
+        function getCellValue(row, index) {
+            return $(row).children('td').eq(index).html()
+        }
+
+        function setIcon(element, asc) {
+            $("th").each(function (index) {
+                $(this).removeClass("sorting");
+                $(this).removeClass("asc");
+                $(this).removeClass("desc");
+            });
+            element.addClass("sorting");
+            if (asc) element.addClass("asc");
+            else element.addClass("desc");
+        }
+
+        $(Document).ready(function () {
+            $('#tabla').DataTable({
+                "paging": true,
+                "ordering": true,
+                "info": true,
+                "pagingType": "full_numbers",
+                //Lenguaje:
+                "language": {
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "previous": "Anterior",
+                        "next": "Siguiente",
+                    },
+                    "info": "Mostrar Entradas de _START_ a _TOTAL_",
+                    "infoEmpty": "Total de Entradas 0",
+                    "infoFiltered": "Filtrado de _MAX_ entradas totales",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "search": "Filtrar"
+                }
+            });
+        });
+    </script>
+}
+
+    <style>
+        table tr th {
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /*.sorting {
+            background-color: #D4D4D4;
+        }*/
+
+        .asc:after {
+            content: ' ↑';
+        }
+
+        .desc:after {
+            content: " ↓";
+        }
+    </style>

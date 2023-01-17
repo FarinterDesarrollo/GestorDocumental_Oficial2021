@@ -1,0 +1,62 @@
+﻿@model GestorDocumentos.Models.ConfCarpetaDetalle
+
+@{
+    ViewBag.Title = "Eliminar";
+}
+
+<h2>Eliminar</h2>
+
+<h3>¿Estás seguro que quieres eliminar esto?</h3>
+<div>
+    <h5>Configuración Carpeta Detalle</h5>
+    <hr />
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Areas.Descripcion, "Área", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.Areas.Descripcion)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConfCarpetaEncabezado.Descripcion, "Nombre de Carpeta", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.ConfCarpetaEncabezado.Descripcion)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.NivelId, "Nivel", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.NivelId)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Descripcion, "Descripción", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.Descripcion)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Tipo_Campo.Descripcion, "Tipo de Campo", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.Tipo_Campo.Descripcion)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Longitud, "Longitud", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.Longitud)
+            </div>
+        </div>
+    </div>
+       
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+                @Html.ActionLink("Página Anterior", "Index")
+            </div>
+        }
+    </div>

@@ -1,0 +1,186 @@
+﻿@model GestorDocumentos.Models.RolPermisos
+
+@{
+    ViewBag.Title = "Editar Rol x Pantalla";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+
+</head>
+<body>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>RolPermisos</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.id)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.RoleName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.RoleName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.RoleName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.IdPantalla, "IdPantalla", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("IdPantalla", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.IdPantalla, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Pantalla, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Pantalla, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Pantalla, "", new { @class = "text-danger" })
+                </div>
+                <br />
+                <input type="button" id="habilitar" value="Habilitar" class="btn btn-block" />
+            </div>
+            <hr />
+            <div class="form-group">
+                @*@Html.LabelFor(model => model.consultar, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                <label class="control-label col-md-2">Consultar</label>
+                <div class="col-md-10">
+                    @Html.DropDownList("consultar", new SelectList(string.Empty, "Value", "Text"), "---Select Detalle---", htmlAttributes: new { @class = "form-control" })
+                    @*@Html.EditorFor(model => model.consultar, new { htmlAttributes = new { @class = "form-control" } })*@
+                    @Html.ValidationMessageFor(model => model.consultar, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @* @Html.LabelFor(model => model.crear, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                <label class="control-label col-md-2">Crear</label>
+                <div class="col-md-10">
+                    @Html.DropDownList("crear", new SelectList(string.Empty, "Value", "Text"), "---Select Detalle---", htmlAttributes: new { @class = "form-control" })
+                    @*  @Html.EditorFor(model => model.crear, new { htmlAttributes = new { @class = "form-control" } })*@
+                    @Html.ValidationMessageFor(model => model.crear, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @* @Html.LabelFor(model => model.editar, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                <label class="control-label col-md-2">Editar</label>
+                <div class="col-md-10">
+                    @Html.DropDownList("editar", new SelectList(string.Empty, "Value", "Text"), "---Select Detalle---", htmlAttributes: new { @class = "form-control" })
+                    @* @Html.EditorFor(model => model.editar, new { htmlAttributes = new { @class = "form-control" } })*@
+                    @Html.ValidationMessageFor(model => model.editar, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @* @Html.LabelFor(model => model.eliminar, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                <label class="control-label col-md-2">Eliminar</label>
+                <div class="col-md-10">
+                    @Html.DropDownList("eliminar", new SelectList(string.Empty, "Value", "Text"), "---Select Detalle---", htmlAttributes: new { @class = "form-control" })
+                    @* @Html.EditorFor(model => model.eliminar, new { htmlAttributes = new { @class = "form-control" } })*@
+                    @Html.ValidationMessageFor(model => model.eliminar, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Actualizar" class="btn btn-success" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        @Html.ActionLink("Página Anterior", "Index")
+    </div>
+</body>
+</html>
+
+@section Scripts{
+    
+    <script type="text/javascript">
+        $(Document).ready(function () {
+            $("#RoleName").attr({ 'readonly': 'readonly' });
+            $("#Pantalla").attr({ 'readonly': 'readonly' });
+
+            $.getJSON('/RolPermisos/GetRoles', function (data) {
+                $.each(data, function () {
+                    $('#RoleName').append('<option value=' +
+                        this.Value + '>' + this.Text + '</option>');
+                });
+            });
+
+            $.getJSON('/RolPermisos/GetCriterios', function (data) {
+                $.each(data, function () {
+                    $('#consultar').append('<option value=' +
+                        this.Value + '>' + this.Text + '</option>');
+                    $('#crear').append('<option value=' +
+                        this.Value + '>' + this.Text + '</option>');
+                    $('#editar').append('<option value=' +
+                        this.Value + '>' + this.Text + '</option>');
+                    $('#eliminar').append('<option value=' +
+                        this.Value + '>' + this.Text + '</option>');
+                });
+            });
+
+            $('#consultar').prop("disabled", true);
+            $('#crear').prop("disabled", true);
+            $('#editar').prop("disabled", true);
+            $('#eliminar').prop("disabled", true);
+        });
+
+        $("#IdPantalla").click(function () {
+            var id = $('select[id=IdPantalla]').val();
+            $.getJSON('/RolPermisos/GetPantalla', { id: $('#IdPantalla').val() }, function (data) {
+                $.each(data, function () {
+                    $('#Pantalla').val(this.Text);
+                });
+            });
+        });
+
+        // Para llenar los dropdownlist de acciones
+
+        $("#habilitar").click(function () {
+            var Pantalla = $("#Pantalla").val();
+            var rol = $("#RoleName").val();
+
+            $('#consultar').prop("disabled", false);
+            $('#crear').prop("disabled", false);
+            $('#editar').prop("disabled", false);
+            $('#eliminar').prop("disabled", false);
+
+            $.getJSON('/RolPermisos/GetPermisosConsulta', { pantalla: Pantalla, rname: rol }, function (data) {
+                $.each(data, function () {
+                    $("#consultar > option[value=" + this.Text + "]").attr("selected", true);
+                });
+            });
+
+            $.getJSON('/RolPermisos/GetPermisosCrear', { pantalla: Pantalla, rname: rol }, function (data) {
+                $.each(data, function () {
+                    $("#crear > option[value=" + this.Text + "]").attr("selected", true);
+                });
+            });
+
+            $.getJSON('/RolPermisos/GetPermisosEditar', { pantalla: Pantalla, rname: rol }, function (data) {
+                $.each(data, function () {
+                    $("#editar > option[value=" + this.Text + "]").attr("selected", true);
+                });
+            });
+
+            $.getJSON('/RolPermisos/GetPermisosEliminar', { pantalla: Pantalla, rname: rol }, function (data) {
+                $.each(data, function () {
+                    $("#eliminar > option[value=" + this.Text + "]").attr("selected", true);
+                });
+            });
+        });
+
+    </script>
+
+    }

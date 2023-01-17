@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <ul class="nav navbar-nav navbar-right">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <li>
+                @*@Html.ActionLink("Hola >> " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" , @id="a2"})*@
+                @Html.ActionLink("Hola >> " + User.Identity.GetUserName() + "!", "Index", "Home", routeValues: null, htmlAttributes: new { title = "Manage", @id = "a2" })
+            </li>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <li><a id="a2" href="javascript:document.getElementById('logoutForm').submit()">Cerrar sesión</a></li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        @* <li>@Html.ActionLink("Registrarse", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "navbar-brand" })</li>*@
+        <li>@Html.ActionLink("Iniciar sesión", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "navbar-brand" })</li>
+    </ul>
+}
+
+@*Código para capturar el movimiento del mouse*@
+<script type="text/javascript">
+    var IDLE_TIMEOUT = 1200;
+        //seconds var _idleSecondsCounter = 0;
+        document.onclick = function () { _idleSecondsCounter = 0; };
+        document.onmousemove = function () { _idleSecondsCounter = 0; };
+        document.onkeypress = function () { _idleSecondsCounter = 0; };
+        window.setInterval(CheckIdleTime, 3600); // 1200000 20 minutos
+        function CheckIdleTime() {
+            _idleSecondsCounter++; var oPanel = document.getElementById("SecondsUntilExpire");
+            if (oPanel) oPanel.innerHTML = (IDLE_TIMEOUT - _idleSecondsCounter) + "";
+            if (_idleSecondsCounter >= IDLE_TIMEOUT) {
+                //Agregado Tiempo transcurrido:
+
+                //
+                //alert("Tiempo Expirado!");
+                window.location.href= "@Url.Action("Login", "Account")";
+            }
+        }
+</script>

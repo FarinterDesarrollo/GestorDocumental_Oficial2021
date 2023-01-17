@@ -1,0 +1,188 @@
+﻿@model IEnumerable<GestorDocumentos.Models.ListaRolesxUsuarios>
+
+@{
+    ViewBag.Title = "Listado de Usuarios";
+   
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @*@Html.ActionLink("Create New", "Create")*@
+    <br />
+    @Html.ActionLink("Crear Usuarios", "Register", "Account") |
+    @Html.ActionLink("Crear Usuarios de forma masiva", "Register2", "Account")
+    @*@Html.ActionLink("Eliminar Usuarios", "Deluser", "Account")*@
+</p>
+
+<div class="table-responsive-pm">
+    <table class="table" id="tabla">
+        <thead>
+            <tr>
+                <th>
+                    <label style="font-weight:bold"> @Html.DisplayNameFor(model => model.UserName)</label>
+                </th>
+                <th>
+                    <label style="font-weight:bold"> @Html.DisplayNameFor(model => model.Email)</label>
+                </th>
+                <th>
+                    <label style="font-weight:bold">  @Html.DisplayNameFor(model => model.UserRoles)</label>
+                </th>
+                <th scope="row"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="numero">
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserRoles)
+                    </td>
+                    <td class="boton">
+                        @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |*@
+                        @*<input type="button" id="ir" value="ir"/>*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table> 
+</div>
+
+@*<nav aria-label="Page navigation example">
+    <ul class="pagination"></ul>
+</nav>*@
+
+@section Scripts
+{
+    @*<script src="@Url.Content("~/Scripts/jquery-3.4.1.min.js")"></script>*@
+    <script type="text/javascript">
+        $('th').click(function () {
+            var table = $(this).parents('table').eq(0)
+            var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+            this.asc = !this.asc
+            if (!this.asc) {
+                rows = rows.reverse()
+            }
+            for (var i = 0; i < rows.length; i++) {
+                table.append(rows[i])
+            }
+            setIcon($(this), this.asc);
+        })
+
+        function comparer(index) {
+            return function (a, b) {
+                var valA = getCellValue(a, index),
+                    valB = getCellValue(b, index)
+                return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB)
+            }
+        }
+
+        function getCellValue(row, index) {
+            return $(row).children('td').eq(index).html()
+        }
+
+        function setIcon(element, asc) {
+            $("th").each(function (index) {
+                $(this).removeClass("sorting");
+                $(this).removeClass("asc");
+                $(this).removeClass("desc");
+            });
+            element.addClass("sorting");
+            if (asc) element.addClass("asc");
+            else element.addClass("desc");
+        }
+
+
+        // Agregado: 17-03-2020
+
+        @*$(".boton").click(function () {
+
+            var valores = "";
+
+            // Obtenemos todos los valores contenidos en los <td> de la fila
+            // seleccionada
+            $(this).parents("tr").find(".numero").each(function () {
+                valores += $(this).html().trim();
+            });
+
+            $.get('@Url.Action("Delete", "Account")', { theName: valores });
+
+            alert(valores);
+        });*@
+
+        //$('.boton').click(function () {
+        //    var valor = $("#oculto").val();
+
+        //    $.getJSON('/Account/jsonDelete', { nombre: $("#oculto").val() }, function (data) {
+        //        $.each(data, function () {
+        //            if (this.Text != '') {
+        //                alert("El rol ya existe, favor intente con otro nombre.");
+        //            }
+        //        });
+        //    });
+        //});
+
+        @*function eliminar() {
+            $('#tabla tr').click(function () {
+                //var currentObject = $(this).parents("tr").find("td").eq(0).html();
+                var currentObject = $(this).find("td").html().trim();
+                
+                alert(currentObject);
+                $.get('@Url.Action("Delete", "Account")', { theName: currentObject });
+            });
+            return true;
+        }*@
+
+        $(Document).ready(function () {
+            $('#tabla').DataTable({
+                "paging": true,
+                "ordering": true,
+                "info": true,
+                "pagingType": "full_numbers",
+                //Lenguaje:
+                "language": {
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "previous": "Anterior",
+                        "next": "Siguiente",
+                    },
+                    "info": "Mostrar Entradas de _START_ a _TOTAL_",
+                    "infoEmpty": "Total de Entradas 0",
+                    "infoFiltered": "Filtrado de _MAX_ entradas totales",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "search": "Filtrar"
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    table tr th {
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /*.sorting {
+            background-color: #D4D4D4;
+        }*/
+
+    .asc:after {
+        content: ' ↑';
+    }
+
+    .desc:after {
+        content: " ↓";
+    }
+</style>

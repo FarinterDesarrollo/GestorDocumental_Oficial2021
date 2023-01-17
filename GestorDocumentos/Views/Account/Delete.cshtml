@@ -1,0 +1,233 @@
+﻿@model List<GestorDocumentos.Models.ListaRolesxUsuarios>
+
+@{
+    ViewBag.Title = "Eliminación de Usuarios";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm())
+{
+
+    <p>
+        <table class="table">
+            <tr>
+                <td>
+                    Documento a Buscar:
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" id="Nombre" name="Nombre" class="form-control" />
+                </td>
+                <td>
+                    <input type="submit" value="Buscar" id="Buscar" class="btn btn-info" hidden />
+                    <input type="button" id="Buscar2" value="Buscar" class="btn btn-info" />
+                    @*<input type="button" value="Limpiar" id="limpiar" class="btn btn-info" />*@
+                    @Html.ActionLink("Limpiar", "Delete", null, htmlAttributes: new { @class = "btn btn-info" })
+                    @*<input type="text" class="form-control pull-right" style="width:20%" id="search" placeholder="Type to search table...">*@
+
+                </td>
+            </tr>
+        </table>
+    </p>
+
+    <div class="table-responsive-lg">
+        <table class="table" id="tabla">
+            <thead>
+                <tr>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Rol
+                    </th>
+                    <th scope="row"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="numero">
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserRoles)
+                        </td>
+
+                        @*<td class="editar">
+                                @Html.ActionLink("Cambiar Contraseña", "ChangePassword", new { email = item.Email })
+                                @Html.ActionLink("Contraseña", "ChangePassword", new { email = item.Email }, htmlAttributes: new { title = "Cambiar Contraseña", @style = "color: white;", @class = "btn btn-info" })
+                                @Html.ActionLink("Editar", "Edit", new { email = item.Email })
+                                @Html.ActionLink("Editar", "Edit", new { email = item.Email }, htmlAttributes: new { title = "Ir", @style = "color: white;", @class = "btn btn-success" })
+                            </td>*@
+
+                        <td class="boton">
+                            @Html.ActionLink("Contraseña", "ChangePassword", new { email = item.Email }, htmlAttributes: new { title = "Cambiar Contraseña", @style = "color: white;", @class = "btn btn-info" })
+                            @Html.ActionLink("Editar", "Edit", new { email = item.Email }, htmlAttributes: new { title = "Editar Usuario", @style = "color: white;", @class = "btn btn-success" })
+                            <input type="submit" value="Eliminar" title="Eliminar Usuario" id="BtnDel" class="btn btn-danger" onclick="return DeleteConfirm();" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@*<nav aria-label="Page navigation example">
+        <ul class="pagination"></ul>
+    </nav>*@
+
+@section Scripts
+{
+    @*<script src="@Url.Content("~/Scripts/jquery-3.4.1.min.js")"></script>*@
+
+    <script type="text/javascript">
+        //$('th').click(function () {
+        //    var table = $(this).parents('table').eq(0)
+        //    var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+        //    this.asc = !this.asc
+        //    if (!this.asc) {
+        //        rows = rows.reverse()
+        //    }
+        //    for (var i = 0; i < rows.length; i++) {
+        //        table.append(rows[i])
+        //    }
+        //    setIcon($(this), this.asc);
+        //})
+
+        //function comparer(index) {
+        //    return function (a, b) {
+        //        var valA = getCellValue(a, index),
+        //            valB = getCellValue(b, index)
+        //        return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB)
+        //    }
+        //}
+
+        //function getCellValue(row, index) {
+        //    return $(row).children('td').eq(index).html()
+        //}
+
+        //function setIcon(element, asc) {
+        //    $("th").each(function (index) {
+        //        $(this).removeClass("sorting");
+        //        $(this).removeClass("asc");
+        //        $(this).removeClass("desc");
+        //    });
+        //    element.addClass("sorting");
+        //    if (asc) element.addClass("asc");
+        //    else element.addClass("desc");
+        //}
+
+        // Función de eliminar
+        //Mensaje de confirmación
+        function DeleteConfirm() {
+            if (window.confirm("¿Desea eliminar el registro?") == true) {
+
+                $(".boton").click(function () {
+                    var valores = "";
+
+                    $(this).parents("tr").find(".numero").each(function () {
+                        valores += $(this).html().trim();
+                    });
+
+                    $("#Nombre").val(valores.substring(valores.search(">") + 1, valores.search("</")));
+
+                    var Eliminar = "eliminar";
+                    var nombre = $("#Nombre").val();
+
+                    $.get('@Url.Action("Delete", "Account")', { eliminar: Eliminar, Nombre: nombre });
+                    return true;
+                });
+
+            }
+            else {
+                var a = "";
+                var b = "";
+
+                 $.get('@Url.Action("Delete", "Account")', { eliminar: a, Nombre: b });
+                alert("¡La acción ha sido cancelada!");
+                return false;
+            }
+        }
+
+        $(document).ready(function () {
+            $('#tabla').DataTable({
+                "scrollY": 200,
+                "scrollCollapse": true,
+                "paging": true,
+                "ordering": true,
+                "info": true,
+                "pagingType": "full_numbers",
+                "searching": false,
+                "pageLength": 10,
+                //Lenguaje:
+                "language": {
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "previous": "Anterior",
+                        "next": "Siguiente",
+                    },
+                    "info": "Mostrar Entradas de _START_ a _TOTAL_",
+                    "infoEmpty": "Total de Entradas 0",
+                    "infoFiltered": "Filtrado de _MAX_ entradas totales",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "search": "Filtrar"
+                }
+            });
+        });
+        //Botón Limpiar:
+
+        //$('#limpiar').click(function () {
+        //    $("#tabla").find("tr:gt(0)").remove();
+        //});
+
+        $("#Buscar2").click(function () {
+            var nombre = $("#Nombre").val();
+            if (nombre == null || nombre == "") {
+                alert("¡El valor de búsqueda esta vacio!");
+            }
+            else {
+                $("#Buscar").click();
+            }
+        });
+
+    </script>
+}
+
+@*<style>
+        table tr th {
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /*.sorting {
+                background-color: #D4D4D4;
+            }*/
+
+        .asc:after {
+            content: ' ↑';
+        }
+
+        .desc:after {
+            content: " ↓";
+        }
+
+    </style>*@
+
+<style>
+    /* Ensure that the demo table scrolls */
+    th, td {
+        white-space: nowrap;
+    }
+
+    div.dataTables_wrapper {
+        margin: 0 auto;
+    }
+</style>

@@ -1,0 +1,64 @@
+﻿@model GestorDocumentos.Models.RoleXAreaXCarpetasXSubniveles
+
+@{
+    ViewBag.Title = "Detalles";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <h4>Rol por Área por carpeta y Subniveles</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Área
+            @*@Html.DisplayNameFor(model => model.Areas.Descripcion)*@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Areas.Descripcion)
+        </dd>
+
+        <dt>
+            Nivel
+            @*@Html.DisplayNameFor(model => model.ConfCarpetaDetalle.Descripcion)*@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ConfCarpetaDetalle.Descripcion)
+        </dd>
+
+        <dt>
+            Carpeta
+            @*@Html.DisplayNameFor(model => model.ConfCarpetaEncabezado.Descripcion)*@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ConfCarpetaEncabezado.Descripcion)
+        </dd>
+
+        <dt>
+            Sub Niveles
+            @*@Html.DisplayNameFor(model => model.MantenimientoSubniveles.Descripcion)*@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MantenimientoSubniveles.Descripcion)
+        </dd>
+
+        <dt>
+            Rol
+            @*@Html.DisplayNameFor(model => model.RoleName)*@
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RoleName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.id }) |
+    @Html.ActionLink("Página Anterior", "Index")
+</p>
+

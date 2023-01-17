@@ -1,0 +1,42 @@
+﻿@model GestorDocumentos.Models.Tipo_Campo
+
+@{
+    ViewBag.Title = "Detalles";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <h4>Tipo de Campo</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Longitud)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Longitud)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Automatico)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Automatico)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Página Anterior", "Index")
+</p>

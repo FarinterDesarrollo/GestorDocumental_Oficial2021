@@ -1,0 +1,59 @@
+﻿@model IEnumerable<GestorDocumentos.Models.EditarUsuario>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RoleId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RoleName)
+        </th>
+        <th>
+            <label class="control-label col-md-2">Asigna Rol</label>
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoleId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoleName)
+            </td>
+            <td>
+                @Html.DropDownList("Roles", new SelectList(string.Empty, "Value", "Text"), "---Select Detalle---", htmlAttributes: new { @class = "form-control" })
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Editar", new { id = item.Id }) |
+            </td>
+        </tr>
+    }
+</table>
+
+@section Scripts
+{
+    
+  <script type="text/javascript">
+      $(Document).ready(function () {
+            $('#Roles').empty();
+
+            $.getJSON('/EditarUsuario/RolExistente', function (data) {
+                $.each(data, function () {
+                    //$(".Roles select").append('<option value="' + id + '">' + field + '</option>');
+                    $('#Roles').append('<option value=' +
+                        this.Value + '>' + this.Text + '</option>');
+                });
+            });
+        });
+  </script>
+    
+}

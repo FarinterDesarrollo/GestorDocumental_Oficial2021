@@ -1,0 +1,108 @@
+﻿@{
+    ViewBag.Title = "Crear Forma Masiva";
+}
+
+<h2>@ViewBag.Title</h2>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+</button>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <label for="text">
+                        <input type="text" id="txt" name="txt" class="form-control" />
+                    </label>
+                </div>
+                <form id="frm">
+                    <label for="file">
+                        <i class="material-icons icon">file_upload</i>
+                        <input type="file" id="file" name="files[]" multiple="multiple" class="multifile" />
+                    </label>
+                </form>
+                <div hidden>
+                    <label for="btn_guardar" class="btn btn-info">
+                        <i class="material-icons icon">cloud_done</i> Guardar Archivo
+                        <input type="button" id="btn_guardar" name="btn_guardar" class="btn btn-success" style="display:none;" />
+                    </label>
+                </div>
+                <label for="btn_guardar2" class="btn btn-info">
+                    <i class="material-icons icon">cloud_done</i> Guardar Archivo
+                    <input type="button" id="btn_guardar2" name="btn_guardar2" class="btn btn-success" style="display:none;" />
+                </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Scripts/jquery-3.4.1.min.js")"></script>
+    <script src="~/Scripts/jquery.multifile.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script type="text/javascript">
+        $('.multifile').multifile();
+
+        window.onload = function () {
+            var btn = document.getElementById("btn_guardar2");
+            btn.onclick = function () {
+
+                var archivo = document.getElementById("file").files;
+
+                if (archivo.length == 0) {
+                    alert("La subida de imagenes es requerida");
+                    return;
+                }
+                else {
+                    for (x = 0; x < archivo.length; x++) {
+                        var length = ((archivo[x].size / 1024) / 1024).toFixed(2);
+                        //alert(length);
+                        if (length > 60) {
+                            alert("El archivo " + archivo[x].name + " tiene " + length + "MB supera el tamaño máximo permitido 60MB");
+                            return;
+                        }
+
+                    }
+                }
+
+                document.formulario.submit();
+            }
+        }
+
+        //$("#file").on("change", function () {
+        //    var archivo = document.getElementById("file").files;
+        //    var length = ((archivo[x].size / 1024) / 1024).toFixed(2);
+        //    for (x = 0; x < archivo.length; x++) {
+        //        if (length > 60) {
+        //            alert("El archivo " + archivo[x].name + " tiene " + length + "MB supera el tamaño máximo permitido 60MB");
+        //            return;
+        //        }
+        //        document.formulario.submit();
+        //    }
+        //});
+
+        //$("#btn_guardar2").on("click", function () {
+        //    if ($('#file').get(0).files.length == 0) {
+        //        //$('#file').val("");
+        //        alert("¡No se ha cargado ningún documento!");
+        //    } else {
+        //        $("#btn_guardar").click();
+        //    }
+        //});
+
+    </script>
+}

@@ -1,0 +1,59 @@
+﻿@model GestorDocumentos.Models.Documento_Detalle
+
+@{
+    ViewBag.Title = "Detalles";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <h4>Detalle de Documento</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.LabelFor(model => model.Areas.Descripcion, "Área", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.Areas.Descripcion)
+        </dd>
+
+        <dt>
+            @Html.LabelFor(model => model.ConfCarpetaEncabezado.Descripcion, "Carpeta", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.ConfCarpetaEncabezado.Descripcion)
+        </dd>
+
+        <dt>
+            @Html.LabelFor(model => model.llaveUnica, "Codificación", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.llaveUnica)
+        </dd>
+
+        <dt>
+            @Html.LabelFor(model => model.Nombre_Ori, "Nombre de Origen", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.Nombre_Ori)
+        </dd>
+
+        <dt>
+            @Html.LabelFor(model => model.Nombre_Des, "Nuevo Nombre", htmlAttributes: new { @class = "control-label col-md-2", @style = "font-weight:bold" })
+        </dt>
+
+        <dd class="col-md-10">
+            @Html.DisplayFor(model => model.Nombre_Des)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @*@Html.ActionLink("Editar", "Edit", new { id = Model.Id })*@ 
+    @Html.ActionLink("Página Anterior", "Index")
+</p>
+

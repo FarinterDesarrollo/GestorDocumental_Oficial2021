@@ -1,0 +1,281 @@
+﻿@model GestorDocumentos.Models.ConfCarpetaDetalle
+
+@{
+    ViewBag.Title = "Crear";
+}
+
+<h2>Crear</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Configuración Carpeta Detalle</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            &nbsp;&nbsp; @Html.LabelFor(model => model.AreaId, "Área", htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-10">
+                @Html.DropDownList("AreaId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AreaId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            &nbsp;&nbsp; @Html.LabelFor(model => model.CarpetaEncabezadoid, "Nombre de Carpeta", htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-10">
+                @Html.DropDownList("CarpetaEncabezadoid", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CarpetaEncabezadoid, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NivelId, "Nivel", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NivelId, new { htmlAttributes = new { @class = "form-control", min = "1" } })
+                @Html.ValidationMessageFor(model => model.NivelId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Descripcion, "Descripción", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @class = "form-control", oninput = "InputToUpper(this);" } })
+                @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Tipo_campoId, "Tipo de Campo", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("Tipo_campoId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Tipo_campoId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Longitud, "Longitud", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Longitud, new { htmlAttributes = new { @class = "form-control", min = "1", max = "???", step = 1 } })
+                @Html.ValidationMessageFor(model => model.Longitud, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" id="Crear" value="Crear" class="button" />
+                <input type="submit" id="Crear2" value="Crear" class="button" hidden/>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts
+{
+    <script src="@Url.Content("~/Scripts/jquery-3.4.1.min.js")"></script>
+    <script type="text/javascript">
+
+        //******************************** Validaciones tipo de campo
+        $("#Tipo_campoId").change(function () {
+            var id = $('select[id=Tipo_campoId]').val();
+            $('#Longitud').empty();
+
+            $.getJSON('/ConfCarpetaDetalles/TraerTipoCampoDescripcion', { id: $('#Tipo_campoId').val() }, function (data) {
+                $.each(data, function (i, field) {
+                    var longitud = parseInt(field.Text);
+
+                    var tipo = $("#Tipo_campoId option:selected").text();
+
+                    switch (tipo) {
+                        case "Fecha":
+                            $('#Longitud').val(longitud);
+                            $('#Longitud').attr({ "readonly": "readonly" });
+                            break;
+                        case "Fecha y Hora":
+                            $('#Longitud').val(longitud);
+                            $('#Longitud').attr({ "readonly": "readonly" });
+                            break;
+                        case "Carácter":
+                            //$('#Longitud').val(longitud - 4);
+                            $('#Longitud').removeAttr("readonly", "readonly");
+                            $('#Longitud').attr({ "max": field.Text, "min": 1 });
+                            break;
+                        case "Numérico":
+                            $('#Longitud').val(longitud - 9);
+                            $('#Longitud').removeAttr("readonly", "readonly");
+                            $('#Longitud').attr({ "max": field.Text, "min": 1 });
+                            break;
+                    }
+                });
+            });
+        });
+
+        $("#Longitud").change(function () {
+            //var id = $(this).find('option:selected').val;
+            var id = $('select[id=Tipo_campoId]').val();
+            $.getJSON('/ConfCarpetaDetalles/TraerTipoCampoDescripcion', { id: $('#Tipo_campoId').val() }, function (data) {
+                $.each(data, function (i, field) {
+                    if ($('#Longitud').val() > field.Text) {
+                        $('#Longitud').attr({ "max": field.Text });
+                    }
+                });
+            });
+        });
+
+        $('#Longitud').on('keypress', function (e) {
+            var reg = /^[1-9]*$/;
+            if (!reg.test(String.fromCharCode(e.which))) {
+                e.preventDefault();
+            }
+        });
+
+        //***************************************************************************
+
+        //******************************** Validaciones tipo de campo
+        $(document).ready(function () {
+            $('#CarpetaEncabezadoid').empty();
+            $('#NivelId').attr({ "placeholder": "" });
+            $('#NivelId').attr({ "readonly": "readonly" });
+
+            var idarea = $('select[id=AreaId]').val();
+
+            $.getJSON('/ConfCarpetaDetalles/GetAreayEncabezadoCarpetaId', { idarea: $('#AreaId').val() }, function (data) {
+                $.each(data, function () {
+                    $('#CarpetaEncabezadoid').append('<option value=' +
+                        this.Value + '>' + this.Text + '</option>');
+                });
+
+                var validar = $("#CarpetaEncabezadoid").val();
+
+                if (validar == null) {
+                    //$('#NivelId').attr({ "placeholder": "" });
+                    $('#NivelId').val("");
+                }
+                else {
+                    var id1 = $('select[id=AreaId]').val();
+                    var id2 = $('select[id=CarpetaEncabezadoid]').val();
+
+                    if (validar !== 0) {
+                        $('#NivelId').val(1);
+                    }
+
+                    $.getJSON('/ConfCarpetaDetalles/ControlarNivelesMax', { id1: $('#AreaId').val(), id2: $('#CarpetaEncabezadoid').val()}, function (data) {
+                        $.each(data, function (i, field) {
+                            var maximo = parseInt(field.Text);
+                            //$('#NivelId').attr({ "placeholder": maximo + 1 });
+                            $('#NivelId').val(maximo);
+                        });
+                    });
+
+                    //Modificar Aqui
+                    verificar_existencia_nivel();
+                }
+            });
+
+        });
+
+        $("#AreaId").change(function () {
+            var idarea = $('select[id=AreaId]').val();
+
+            $('#CarpetaEncabezadoid').empty();
+            $.getJSON('/ConfCarpetaDetalles/GetAreayEncabezadoCarpetaId', { idarea: $('#AreaId').val() }, function (data) {
+                $.each(data, function () {
+                    $('#CarpetaEncabezadoid').append('<option value=' +
+                        this.Value + '>' + this.Text + '</option>');
+                });
+
+                var validar = $("#CarpetaEncabezadoid").val();
+
+                if (validar == null) {
+                    //$('#NivelId').attr({ "placeholder": "" });
+                    $('#NivelId').val("");
+                }
+                else {
+                    var id1 = $('select[id=AreaId]').val();
+                    var id2 = $('select[id=CarpetaEncabezadoid]').val();
+
+                    if (validar !== 0) {
+                        $('#NivelId').val(1);
+                    }
+
+                    $.getJSON('/ConfCarpetaDetalles/ControlarNivelesMax', { id1: $('#AreaId').val(), id2: $('#CarpetaEncabezadoid').val() }, function (data) {
+                        $.each(data, function (i, field) {
+                            var maximo = parseInt(field.Text);
+                            //$('#NivelId').attr({ "placeholder": maximo + 1 });
+                            $('#NivelId').val(maximo);
+                        });
+                    });
+                    //Modificar Aqui
+                    verificar_existencia_nivel();
+                }
+            });
+
+        });
+
+        $("#CarpetaEncabezadoid").change(function () {
+            var id1 = $('select[id=AreaId]').val();
+            var id2 = $('select[id=CarpetaEncabezadoid]').val();
+            $('#NivelId').empty();
+
+            $.getJSON('/ConfCarpetaDetalles/ControlarNivelesMax', { id1: $('#AreaId').val(), id2: $('#CarpetaEncabezadoid').val() }, function (data) {
+                $.each(data, function (i, field) {
+                    var maximo = parseInt(field.Text);
+                    //$('#NivelId').attr({ "placeholder": maximo + 1 });
+                    $('#NivelId').val(maximo);
+                });
+            });
+            //Modificar Aqui
+            verificar_existencia_nivel();
+        });
+
+        $('#Descripcion').bind('keypress', function (event) {
+            var regex = new RegExp("^[a-zA-Z0-9- ]+$");
+            var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+            if (!regex.test(key)) {
+                event.preventDefault();
+                return false;
+            }
+        });
+
+
+        //Agregado 22/04/2020
+
+        function verificar_existencia_nivel() {
+
+            $.getJSON('/ConfCarpetaDetalles/VerificaSubnivelMaximo', { id1: $('#AreaId').val(), id2: $('#CarpetaEncabezadoid').val() }, function (data) {
+                $.each(data, function (i, field) {
+
+                    if (Number(field.Text) == 1) {
+                        $("#Crear").attr({ 'hidden': false });
+                        $("#Crear2").attr({ 'hidden': true });
+
+                        $("#Crear").on("click", function (e) {
+                            alert("¡La carpeta detalle ya tiene el máximo subnivel establecido!");
+                            e.preventDefault();
+                        });
+                    }
+                    else {
+                        $("#Crear").attr({ 'hidden': true });
+                        $("#Crear2").attr({ 'hidden': false });
+
+                        $("#Crear2").on("click", function (e) {
+                            $(this).unbind(e);
+                        });
+                    }
+
+                });
+            });
+
+        }
+
+        //****************************************************
+
+            //***************************************************************************
+    </script>
+}
+
+<div>
+    @Html.ActionLink("Página Anterior", "Index")
+</div>

@@ -1,0 +1,495 @@
+﻿.material-icons {
+    vertical-align: middle;
+}
+
+.bg-personalizado {
+    position : fixed ;
+    top: 0 ;
+    width : 100%;
+    background: #000;
+    background-image: radial-gradient(ellipse at left bottom, rgb(14, 46, 103) 0%,rgb(17, 97, 237) 59%, rgb(14, 46, 103) 100%);
+}
+
+.navbar-dark .nav-link {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+    .navbar-dark .nav-link:hover {
+        color: rgba(255, 255, 255, .8);
+    }
+
+/*Agregado Joaquin 21/11/2019*/
+.navbar-dark .navbar-brand {
+    color: white;
+}
+
+.navbar-dark .navbar-brand:hover {
+    color: #f6eb19;
+}
+
+
+.sidebar {
+    position: fixed;
+    top: 50px;
+    width: 268px;
+    height: 100%;
+    background: #000;
+    overflow: auto;
+    /*background-image: radial-gradient(ellipse at left bottom, rgb(14, 46, 103) 0%,rgb(17, 97, 237) 59%, rgb(14, 46, 103) 100%);*/
+    background-image: radial-gradient(ellipse at left bottom, rgb(17, 159, 229) 0%,rgb(17, 97, 237) 59%, rgb(17, 159, 229) 100%);
+}
+
+/*Agregado ellipse 28/11/2019 del proyecto anterior por Joaquín*/
+.sb-dropdown {
+    overflow: hidden;
+}
+
+    .sidebar ul, .sb-dropdown > ul {
+        list-style: none;
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .sb-dropdown > ul {
+        padding-left: 25px;
+    }
+
+        .sidebar > ul {
+            padding-top: 1.3rem;
+            padding-bottom: 1.3rem;
+        }
+
+        .sidebar ul > li, .sb-dropdown > ul > li {
+            position: relative;
+        }
+
+        .sidebar ul > li a, .sb-dropdown > ul > li a {
+            display: inline-block;
+            padding: 0 20px;
+            color: rgba(255,255,255,.5);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.1rem;
+            width: 100%;
+            position: relative;
+        }
+
+        .sb-dropdown-2nivel ul > li a {
+            display: inline-block;
+            padding: 0 55px;
+            color: rgba(255,255,255,.5);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 400;
+            line-height: 0.95rem;
+            width: 100%;
+            position: relative;
+        }
+
+        .arrow {
+            position: absolute;
+            right: calc(20px);
+        }
+
+        .arrow-rotar {
+            transform: rotateZ(-90deg);
+            transition: transform ease-out .3s;
+        }
+
+        .sidebar ul > li a .icon, .sb-dropdown > ul > li a .icon {
+            margin-right: .8rem;
+        }
+
+        .sidebar ul > li a:hover, .sb-dropdown > ul > li a:hover {
+            color: rgba(255,255,255,.8);
+        }
+
+/*·····························································*/
+    /*.sidebar ul {
+        list-style: none;
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        padding-top: 1.3rem;
+        padding-bottom: 1.3rem;
+    }
+
+        .sidebar ul > li {
+            position: relative;
+        }
+
+            .sidebar ul > li a {
+                display: inline-block;
+                padding: 0 20px;
+                color: rgba(255,255,255,.5);
+                text-decoration: none;
+                font-size: 1rem;
+                font-weight: 600;
+                line-height: 1.1rem;
+                width: 100%;
+            }
+
+                .sidebar ul > li a .icon {
+                    margin-right: .8rem;
+                }
+
+                .sidebar ul > li a:hover {
+                    color: rgba(255,255,255,.8);
+                }*/
+
+/*Agregado ellipse 28/11/2019 del proyecto anterior por Joaquín*/
+main {
+    margin-left: 0px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    transition: margin-left ease-out .2s;
+    margin-top: 10px;
+}
+
+                    /*.sidebar-nav > .sidebar-brand {
+                        height: 65px;
+                        line-height: 60px;
+                        font-size: 18px;
+                    }*/
+
+                    .sidebar-brand {
+                        color: rgba(255, 255, 255, .8);
+                    }
+
+                        .sidebar li a, .sidebar-brand li a {
+                            color: #faf2f2;
+                        }
+
+                    .sidebar ul > li a {
+                        color: white;
+                    }
+
+                        .sidebar ul > li a:hover {
+                            color: #f6eb19;
+                        }
+
+.boton_personalizado {
+    text-decoration: none;
+    padding: 2px;
+    font-weight: 600;
+    font-size: 18px; 
+    color: #0016b0;
+    background-color: #f6eb19;
+    border-radius: 6px;
+    border: 2px solid #0016b0;
+}
+
+.col-md-2-site {
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
+}
+
+.material-icons{
+    vertical-align: middle;
+}
+
+/*estilos defs login*/
+.login-container {
+    display: block;
+    position: relative;
+    z-index: 0;
+    margin: 4rem auto 0;
+    padding: 5rem 4rem 0 4rem;
+    width: 100%;
+    max-width: 525px;
+    min-height: 680px;
+    top: -50px;
+    /*background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/283591/login-background.jpg);*/
+    box-shadow: 0 50px 70px -20px rgba(0, 0, 0, 0.85);
+}
+
+    /*.login-container:after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        z-index: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-image: radial-gradient(ellipse at left bottom, rgba(22, 24, 47, 1) 0%,rgba(38, 20, 72, .9) 59%, rgba(17, 27, 75, .9) 100%);
+        box-shadow: 0 -20px 150px -20px rgba(0, 0, 0, 0.5);
+    }*/
+
+    .login-container:after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        z-index: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-image: radial-gradient(ellipse at left bottom, rgb(14, 46, 103) 0%,rgb(17, 97, 237) 59%, rgb(14, 46, 103) 100%);
+        box-shadow: 0 -20px 150px -20px rgba(0, 0, 0, 0.5);
+        border-radius: 4px;
+    }
+
+.form-login {
+    position: relative;
+    z-index: 1;
+    padding-bottom: 4.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.login-nav {
+    position: relative;
+    padding: 0;
+    margin: 0 0 6em 1rem;
+}
+
+.login-nav__item {
+    list-style: none;
+    display: inline-block;
+}
+
+    .login-nav__item + .login-nav__item {
+        margin-left: 2.25rem;
+    }
+
+    .login-nav__item a {
+        position: relative;
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 1.25rem;
+        padding-bottom: .5rem;
+        transition: .20s all ease;
+    }
+
+        .login-nav__item.active a,
+        .login-nav__item a:hover {
+            color: #ffffff;
+            transition: .15s all ease;
+        }
+
+        .login-nav__item a:after {
+            content: '';
+            display: inline-block;
+            height: 10px;
+            background-color: rgb(255, 255, 255);
+            position: absolute;
+            right: 100%;
+            bottom: -1px;
+            left: 0;
+            border-radius: 50%;
+            transition: .15s all ease;
+        }
+
+        .login-nav__item a:hover:after,
+        .login-nav__item.active a:after {
+            background-color: rgb(17, 97, 237);
+            height: 2px;
+            right: 0;
+            bottom: 2px;
+            border-radius: 0;
+            transition: .20s all ease;
+        }
+
+.login__label {
+    display: block;
+    padding-left: 1rem;
+    padding-top: 1rem;
+}
+
+.login__label,
+.login__label--checkbox {
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    font-size: .75rem;
+    margin-bottom: 1rem;
+}
+
+.login__label--checkbox {
+    display: inline-block;
+    position: relative;
+    padding-left: 1.5rem;
+    margin-top: 2rem;
+    margin-left: 1rem;
+    color: #ffffff;
+    font-size: .75rem;
+    text-transform: inherit;
+}
+
+.login__input {
+    color: white;
+    font-size: 1.15rem;
+    width: 100%;
+    padding: .5rem 1rem;
+    border: 2px solid transparent;
+    outline: none;
+    border-radius: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.25);
+    /*background-color: #ffffff;*/
+    letter-spacing: 1px;
+}
+
+    .login__input:hover,
+    .login__input:focus {
+        color: black;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        background-color: white;
+    }
+
+    .login__input + .login__label {
+        margin-top: 1.5rem;
+    }
+
+.login__input--checkbox {
+    position: absolute;
+    top: .1rem;
+    left: 0;
+    margin: 0;
+}
+
+.login__submit {
+    /*color: #ffffff;*/
+    color: gold;
+    font-size: 1rem;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 1rem;
+    padding: .75rem;
+    border-radius: 2rem;
+    display: block;
+    width: 100%;
+    background-color: rgba(17, 97, 237, .75);
+    border: none;
+    cursor: pointer;
+}
+
+    .login__submit:hover {
+        background-color: rgba(17, 97, 237, 1);
+    }
+
+.login__forgot {
+    display: block;
+    margin-top: 3rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: .75rem;
+    text-decoration: none;
+    position: relative;
+    z-index: 1;
+}
+
+    .login__forgot:hover {
+        color: gold;
+    }
+
+.s-h3 {
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+}
+
+elemento {
+    padding-bottom: 0rem;
+    padding-top: 5rem;
+    border-top-style: solid;
+    border-top-width: 0px;
+    border-bottom-style: solid;
+    border-bottom-width: 0px;
+    top: -50px;
+}
+
+.div-estatico {
+    position: fixed;
+    top: 51px;
+    width: 200%;
+    background: white;
+}
+
+.tr-estatico {
+    position: fixed;
+    top: 133px;
+    width: 200%;
+    background: white;
+} 
+/*Agregado ellipse 11/12/2019*/
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+table {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    margin: 5px;
+    width: 50%;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+th {
+    font-weight: bold;
+    padding: 8px;
+    background: rgb(17, 97, 237);
+    border-top: 10px solid #aabcfe;
+    border-bottom: 1px solid #fff;
+    color: #f6eb19;
+}
+
+td {
+    padding: 8px;
+    background: #e8edff;
+    border-bottom: 2px solid #fff;
+    color: #669;
+    border-top: 1px solid transparent;
+}
+
+tr:hover td {
+    background: #d0dafd;
+    color: #339;
+}
+
+/*//////*/
+.button {
+    display: inline-block;
+    padding: 5px 15px;
+    font-size: 1.30rem;
+    font-weight: 400;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #22429d;
+    border: 1px solid transparent;
+    border-radius: 0.35rem;
+    border-color: #fdf004;
+    /*box-shadow: 0 9px #999;*/
+}
+
+    .button:hover {
+        background-color: #22429d;
+        color: #fdf004;
+    }
+
+    .button:active {
+        background-color: #3e8e41;
+        box-shadow: 0 5px #666;
+        transform: translateY(4px);
+    }
+
+.table-responsive-pm {
+    display: block;
+    width: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    height: 550px;
+}
+
+    .table-responsive-pm > .table-bordered {
+        border: 0;
+    }

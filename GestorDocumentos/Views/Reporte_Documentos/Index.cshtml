@@ -1,0 +1,322 @@
+﻿@model GestorDocumentos.Models.Documento_Detalle
+
+@{
+    ViewBag.Title = "Reporte de Documentos";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("GenerarReporte", "Reporte_Documentos", null, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h3>Seleccione los filtros a buscar</h3>
+        <hr />
+        @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.llaveUnica, "Clave", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.llaveUnica, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.llaveUnica, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+        @Html.EditorFor(model => model.llaveUnica, new { htmlAttributes = new { @class = "form-control", @type = "hidden" } })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AreaId, "Área", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.AreaId, new SelectList(ViewBag.AreaId, "value", "Text"), new { @class = "form-control" })
+                @*@Html.DropDownList("AreaId", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.AreaId, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CarpetaEncabezadoid, "Carpeta", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("CarpetaEncabezadoid", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CarpetaEncabezadoid, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div id="dynamicfields">
+
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.Nombre_Ori, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Nombre_Ori, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Nombre_Ori, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Nombre_Des, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Nombre_Des, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Nombre_Des, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Imagen, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Imagen, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Imagen, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        @Html.EditorFor(model => model.Nombre_Ori, new { htmlAttributes = new { @class = "form-control", @type = "hidden" } })
+        @Html.EditorFor(model => model.Nombre_Des, new { htmlAttributes = new { @class = "form-control", @type = "hidden" } })
+        @Html.EditorFor(model => model.Imagen, new { htmlAttributes = new { @class = "form-control", @type = "hidden" } })
+
+        @*<div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>*@
+        @*<form name="Nombreform">
+                Documento a Buscar:
+
+
+            </form>*@
+
+        <table>
+            <tr>
+                <td>
+                    Documento a Buscar:
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" id="Nombre" name="Nombre" class="form-control" oninput="InputToUpper(this);"> <br />
+                </td>
+
+                <td>
+                    <input type="submit" value="Buscar" class="btn btn-info" />
+                </td>
+
+
+
+            </tr>
+        </table>
+    </div>
+}
+
+<script src="@Url.Content("~/Scripts/jquery-3.4.1.min.js")"></script>
+
+<script type="text/javascript">
+
+    /*(function ($) {
+    })(jQuery)*/
+    window.onload = () => {
+        let CarpetaEncabezadoid = document.querySelector('#CarpetaEncabezadoid');
+        getcarpetas();
+        //console.log('sdfsdf: ' + document.querySelector('#CarpetaEncabezadoid').options.length);
+        //console.log(document.querySelector('#CarpetaEncabezadoid'));
+
+        $("#AreaId").click(getcarpetas);
+
+        function getcarpetas() {
+            let list = '';
+            $.getJSON('/Reporte_Documentos/GetAreayEncabezadoCarpetaId', { idarea: $('#AreaId').val() }, function (data) {
+                $.each(data, function () {
+                    list += `<option value="${this.Value}">${this.Text}</option>`;
+                });
+                //console.log(data);
+                $('#CarpetaEncabezadoid').html(list);
+                //console.log(document.querySelector('#CarpetaEncabezadoid').options.length);
+                if (document.querySelector('#CarpetaEncabezadoid').options.length > 0) {
+                    setField();
+                } else {
+                    document.querySelector('#dynamicfields').innerHTML = '';
+                }
+            });
+        }
+
+
+
+
+        CarpetaEncabezadoid.addEventListener('change', setField);
+
+        async function setField() {
+            //console.log('inicio');
+            document.querySelector('#dynamicfields').innerHTML = '';
+            //console.log(CarpetaEncabezadoid.value);
+            let json = await fileds(CarpetaEncabezadoid.value);
+            let selects = JSON.parse(json.selects);
+            //console.log(json);
+
+            let options = JSON.parse(json.options);
+            //console.log(options);
+            console.log(selects)
+            for (let i = 0; i < selects.length; i++) {
+                let div = document.createElement('div');
+                let label = document.createElement('label');
+                label.innerText = selects[i].Descripcion;
+                label.setAttribute('class', 'control-label');
+                label.setAttribute('for', `dynamicselect${selects[i].Descripcion}`)
+                div.setAttribute('class', 'form-group');
+                let select = document.createElement('SELECT');
+                select.setAttribute('id', `dynamicselect${selects[i].Descripcion}`);
+                select.setAttribute('class', 'form-control');
+                //select.setAttribute('required', true);
+
+                let defaultoption = document.createElement('option');
+                defaultoption.setAttribute('value', '');
+                defaultoption.setAttribute('selected', true);
+                defaultoption.setAttribute('disabled', true);
+                defaultoption.innerText = `Seleccionar ${selects[i].Descripcion}`;
+                select.appendChild(defaultoption);
+                div.appendChild(label);
+                div.appendChild(select);
+                document.querySelector('#dynamicfields').appendChild(div);
+                for (var x = 0; x < options.length; x++) {
+                    if (options[x].ConfCarpetaDetalleId === selects[i].ConfCarpetaDetalleId) {
+                        let option = document.createElement('option');
+                        option.setAttribute('value', options[x].Descripcion);
+                        option.innerText = options[x].Descripcion;
+                        select.appendChild(option);
+                    }
+                }
+                select.addEventListener('change', setllaveunica);
+            }
+            let fecha = JSON.parse(json.fecha);
+            //console.table(fecha);
+            if (fecha != '' && fecha != undefined && fecha != null && fecha.Tipo != 0) {
+
+                let div = document.createElement('div');
+                let label = document.createElement('label');
+                div.setAttribute('class', 'form-group');
+                label.setAttribute('class', 'control-label');
+                label.setAttribute('for', 'dateInput');
+                label.innerText = fecha.Descripcion;
+                let input = document.createElement('input');
+                input.setAttribute('type', 'date');
+                input.setAttribute('class', 'form-control');
+                input.setAttribute('name', 'dateInput');
+                input.setAttribute('id', 'dateInput');
+                //input.setAttribute('required', true);
+                div.appendChild(label);
+                div.appendChild(input);
+                document.querySelector('#dynamicfields').appendChild(div);
+                //fchtoday();
+                input.addEventListener('change', setllaveunica);
+            }
+        }
+
+        function setllaveunica() {
+            let selects = document.querySelectorAll('#dynamicfields select');
+            let fecha = document.querySelector('#dateInput');
+            //console.log(fecha);
+            let llaveunica = '';
+            for (let i = 0; i < selects.length; i++) {
+                if (selects[i].value != '') {
+                    llaveunica += selects[i].value + '-';
+                }
+
+            }
+            console.log(llaveunica);
+            llaveunica = llaveunica.slice(0, -1);
+            let slowdate = '';
+            //fechas****************************************
+            if (fecha != null && fecha.value != '') {
+                //console.log('fecha.value=> '+fecha.value);
+                slowdate = fecha.value.split("-");
+                //console.log(slowdate);
+                llaveunica = llaveunica + '-' + slowdate[0] + slowdate[1] + slowdate[2];
+            }
+
+            //**********************************************
+            //console.log(llaveunica);
+            document.querySelector('#llaveUnica').value = llaveunica;
+            document.querySelector('#Nombre').value = llaveunica;
+        }
+
+        async function fileds(id) {
+            const settings = {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            };
+            let request = await fetch(`/Reporte_Documentos/fields/${id}`, settings);
+            let response = await request.json();
+            return response;
+        }
+    }
+
+    async function fchtoday() {
+        let d = new Date();
+        d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+        d = d.toJSON().slice(0, 10);
+        console.log(d);
+        //document.querySelector('#dateInput').value = d;
+    }
+</script>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $('th').click(function () {
+            var table = $(this).parents('table').eq(0)
+            var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+            this.asc = !this.asc
+            if (!this.asc) {
+                rows = rows.reverse()
+            }
+            for (var i = 0; i < rows.length; i++) {
+                table.append(rows[i])
+            }
+            setIcon($(this), this.asc);
+        })
+
+        function comparer(index) {
+            return function (a, b) {
+                var valA = getCellValue(a, index),
+                    valB = getCellValue(b, index)
+                return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB)
+            }
+        }
+
+        function getCellValue(row, index) {
+            return $(row).children('td').eq(index).html()
+        }
+
+        function setIcon(element, asc) {
+            $("th").each(function (index) {
+                $(this).removeClass("sorting");
+                $(this).removeClass("asc");
+                $(this).removeClass("desc");
+            });
+            element.addClass("sorting");
+            if (asc) element.addClass("asc");
+            else element.addClass("desc");
+        }
+    </script>
+}
+
+<style>
+    table tr th {
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /*.sorting {
+            background-color: #D4D4D4;
+        }*/
+
+    .asc:after {
+        content: ' ↑';
+    }
+
+    .desc:after {
+        content: " ↓";
+    }
+</style>

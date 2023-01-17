@@ -1,0 +1,252 @@
+﻿@model GestorDocumentos.Models.RoleXAreaXCarpetasXSubniveles
+
+@{
+    ViewBag.Title = "Editar";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Rol por Área por carpeta y Subniveles</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RoleName, "Rol", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.RoleName, new SelectList(ViewBag.Roles, "value", "Text"), new { @class = "form-control" })
+                @*@Html.EditorFor(model => model.RoleName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.RoleName, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AreaId, "Área", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.DropDownList("AreaId", null, htmlAttributes: new { @class = "form-control" })*@
+                @Html.DropDownListFor(model => model.AreaId, new SelectList(ViewBag.AreaId, "value", "Text"), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AreaId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CarpetaEncabezadoid, "Carpeta", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("CarpetaEncabezadoid", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CarpetaEncabezadoid, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConfCarpetaDetalleid, "Nivel", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.DropDownList("ConfCarpetaDetalleid", null, htmlAttributes: new { @class = "form-control" })*@
+                @Html.DropDownList("ConfCarpetaDetalleId", new SelectList(string.Empty, "Value", "Text"), "---Select Detalle---", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ConfCarpetaDetalleid, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MantenimientoSubnivelesid, "Sub Nivel", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("MantenimientoSubnivelesid", new SelectList(string.Empty, "Value", "Text"), "---Select Sub Nivel---", htmlAttributes: new { @class = "form-control" })
+                @*@Html.DropDownList("MantenimientoSubnivelesid", null, htmlAttributes: new { @class = "form-control" })*@
+                @Html.ValidationMessageFor(model => model.MantenimientoSubnivelesid, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Editar" class="btn btn-warning" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Página Anterior", "Index")
+</div>
+
+<script src="@Url.Content("~/Scripts/jquery-3.4.1.min.js")"></script>
+
+<script type="text/javascript">
+    $('#MantenimientoSubnivelesid').change(function () {
+
+    })
+
+    $('#CarpetaEncabezadoid').change(function () {
+        $('#MantenimientoSubnivelesid')
+            .find('option')
+            .remove()
+            .end()
+            //.append('<option value="0">Selecciona Una Carpeta</option>')
+            //.val('0')
+            ;
+        $('#ConfCarpetaDetalleId')
+            .find('option')
+            .remove()
+            .end()
+            //.append('<option value="0">Selecciona Una Carpeta</option>')
+            //.val('0')
+            ;
+
+        var idcarpeta = $('select[id=CarpetaEncabezadoid]').val();
+
+        $.getJSON('/RoleXAreaXCarpetasXSubniveles/GetCarpetaDetalleEncabezadoId', { idcarpeta: $('#CarpetaEncabezadoid').val() }, function (data) {
+            $.each(data, function () {
+                $('#ConfCarpetaDetalleId').append('<option value=' +
+                    this.Value + '>' + this.Text + '</option>');
+            });
+        });
+    })
+    //ConfCarpetaDetalleId
+    $('#ConfCarpetaDetalleId').change(function () {
+        $('#MantenimientoSubnivelesid')
+            .find('option')
+            .remove()
+            .end()
+            //.append('<option value="0">Selecciona Una Carpeta</option>')
+            //.val('0')
+            ;
+    //$('#ConfCarpetaDetalleId').empty();
+        //console.log(document.querySelector('#ConfCarpetaDetalleId'));
+        var idcarpetadetalle = $('select[id=ConfCarpetaDetalleId]').val();
+
+        $.getJSON('/RoleXAreaXCarpetasXSubniveles/GetSubnivelesId', { idcarpetadetalle: $('#ConfCarpetaDetalleId').val() }, function (data) {
+            console.log($('#ConfCarpetaDetalleId').val());
+            $.each(data, function () {
+                $('#MantenimientoSubnivelesid').append('<option value=' +
+                    this.Value + '>' + this.Text + '</option>');
+            });
+            //console.log(document.querySelector('#MantenimientoSubnivelesid'));
+        });
+    })
+
+    $("#AreaId").change(function () {
+        var idarea = $('select[id=AreaId]').val();
+        $('#CarpetaEncabezadoid').empty();
+        $('#ConfCarpetaDetalleId').empty();
+        $('#MantenimientoSubnivelesid').empty();
+        $.getJSON('/RoleXAreaXCarpetasXSubniveles/GetAreayEncabezadoCarpetaId', { idarea: $('#AreaId').val() }, function (data) {
+            $.each(data, function () {
+                $('#CarpetaEncabezadoid').append('<option value=' +
+                    this.Value + '>' + this.Text + '</option>');
+            });
+
+            var validar = $("#CarpetaEncabezadoid").val();
+
+            if (validar === null) {
+                $('#ConfCarpetaDetalleId').attr({ "placeholder": "--- Detalles ---" });
+                //$('#ConfCarpetaDetalleId').val("--- Detalles ---" );
+            }
+            else {
+                var idcarpeta = $('select[id=CarpetaEncabezadoid]').val();
+
+                $.getJSON('/RoleXAreaXCarpetasXSubniveles/GetCarpetaDetalleEncabezadoId', { idcarpeta: $('#CarpetaEncabezadoid').val() }, function (data) {
+                    $.each(data, function () {
+                        $('#ConfCarpetaDetalleId').append('<option value=' +
+                            this.Value + '>' + this.Text + '</option>');
+                    });
+                });
+                var idcarpetadetalle = $('select[id=ConfCarpetaDetalleId]').val();
+
+                $.getJSON('/RoleXAreaXCarpetasXSubniveles/GetSubnivelesId', { idcarpetadetalle: $('#ConfCarpetaDetalleId').val() }, function (data) {
+                    console.log($('#ConfCarpetaDetalleId').val());
+                    $.each(data, function () {
+                        $('#MantenimientoSubnivelesid').append('<option value=' +
+                            this.Value + '>' + this.Text + '</option>');
+                    });
+                    //console.log(document.querySelector('#MantenimientoSubnivelesid'));
+                });
+            }
+        });
+    });
+    $(document).ready(function () {
+        var idarea = $('select[id=AreaId]').val();
+        $('#CarpetaEncabezadoid').empty();
+        $('#ConfCarpetaDetalleId').empty();
+        $('#MantenimientoSubnivelesid').empty();
+              $.getJSON('/RoleXAreaXCarpetasXSubniveles/GetAreayEncabezadoCarpetaId', { idarea: $('#AreaId').val() }, function (data) {
+            $.each(data, function () {
+                $('#CarpetaEncabezadoid').append('<option value=' +
+                    this.Value + '>' + this.Text + '</option>');
+            });
+
+            var validar = $("#CarpetaEncabezadoid").val();
+
+            if (validar === null) {
+                $('#ConfCarpetaDetalleId').attr({ "placeholder": "--- Detalles ---" });
+                //$('#ConfCarpetaDetalleId').val("--- Detalles ---" );
+            }
+            else {
+                var idcarpeta = $('select[id=CarpetaEncabezadoid]').val();
+
+                $.getJSON('/RoleXAreaXCarpetasXSubniveles/GetCarpetaDetalleEncabezadoId', { idcarpeta: $('#CarpetaEncabezadoid').val() }, function (data) {
+                    $.each(data, function () {
+                        $('#ConfCarpetaDetalleId').append('<option value=' +
+                            this.Value + '>' + this.Text + '</option>');
+                    });
+                    ////Agregado 07/01/2020
+                    //var id1 = $('select[id=AreaId]').val();
+                    //var id2 = $('select[id=CarpetaEncabezadoid]').val();
+                    //var id3 = $('select[id=ConfCarpetaDetalleId]').val();
+
+                    //$.getJSON('/RoleXAreaXCarpetasXSubniveles/GetControlarTipodeCampoId', { id1: $('#AreaId').val(), id2: $('#CarpetaEncabezadoid').val(), id3: $('#ConfCarpetaDetalleId').val() }, function (data) {
+                    //    $.each(data, function (i, field) {
+                    //        var maximo = parseInt(field.Text);
+
+                    //        $('#Descripcion').attr({ "maxlength": maximo });
+                    //    });
+                    //});
+                });
+                var idcarpetadetalle = $('select[id=ConfCarpetaDetalleId]').val();
+
+                $.getJSON('/RoleXAreaXCarpetasXSubniveles/GetSubnivelesId', { idcarpetadetalle: $('#ConfCarpetaDetalleId').val() }, function (data) {
+                    console.log($('#ConfCarpetaDetalleId').val());
+                    $.each(data, function () {
+                        $('#MantenimientoSubnivelesid').append('<option value=' +
+                            this.Value + '>' + this.Text + '</option>');
+                    });
+                    //console.log(document.querySelector('#MantenimientoSubnivelesid'));
+                });
+            }
+        });
+
+    });
+
+    //window.onload = () => {
+    //    let CarpetaEncabezadoid = document.querySelector('#CarpetaEncabezadoid');
+    //    //console.log('sdfsdf: ' + document.querySelector('#CarpetaEncabezadoid').options.length);
+    //    getcarpetas();
+
+    //    //console.log(document.querySelector('#CarpetaEncabezadoid'));
+
+    //    $("#AreaId").change(getcarpetas);
+
+    //    function getcarpetas() {
+    //        //console.log(document.querySelector('#CarpetaEncabezadoid').options.length);
+    //        let list = '';
+    //        $.getJSON('/RoleXAreaXCarpetasXSubniveles/GetAreayEncabezadoCarpetaId', { idarea: $('#AreaId').val() }, function (data) {
+    //            $.each(data, function () {
+    //                list += `<option value="${this.Value}">${this.Text}</option>`;
+    //            });
+    //            //console.log(data);
+    //            $('#CarpetaEncabezadoid').html(list);
+    //            //console.log(document.querySelector('#CarpetaEncabezadoid').options.length);
+    //            //if (document.querySelector('#CarpetaEncabezadoid').options.length > 0) {
+    //            //    setField();
+    //            //} else {
+    //            //    document.querySelector('#dynamicfields').innerHTML = '';
+    //            //}
+    //        });
+    //    }
+
+
+    //}
+
+</script>
