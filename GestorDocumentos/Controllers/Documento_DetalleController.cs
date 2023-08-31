@@ -13,6 +13,7 @@ using System.IO;
 using GestorDocumentos.Archivos;
 using System.Globalization;
 using GestorDocumentos.Clases;
+using GestorDocumentos.Servicios;
 
 namespace GestorDocumentos.Controllers
 {
@@ -20,6 +21,7 @@ namespace GestorDocumentos.Controllers
     public class Documento_DetalleController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly FarmaciasServices _services = new FarmaciasServices();
         public string error;
         public ActionResult Imagen(int id)
         {
@@ -390,14 +392,18 @@ namespace GestorDocumentos.Controllers
                              && ms.CarpetaEncabezadoid == id
                              select ms.Id).ToList();
 
-            IQueryable<MantenimientoSubniveles> mn;
+            //IQueryable<MantenimientoSubniveles> mn;
+            var mn = db.MantenimientoSubniveles.OrderBy(x => x.Descripcion).Where(ms => ms.CarpetaEncabezadoid == id);
+
             if (Efarmacia.Count > 0)
             {
                 int numero = Efarmacia[0];
-                var subnivel= db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && (ms.Descripcion.Contains("K0") || ms.Descripcion.Contains("K1") || ms.Descripcion.Contains("K2") || ms.Descripcion.Contains("K5") || ms.Descripcion.Contains("K6"))).Union(db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && (ms.Descripcion.Contains("H0") || ms.Descripcion.Contains("H1") || ms.Descripcion.Contains("H2") || ms.Descripcion.Contains("H5") || ms.Descripcion.Contains("H6")))).ToList();
+                //var subnivel= db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && (ms.Descripcion.Contains("K0") || ms.Descripcion.Contains("K1") || ms.Descripcion.Contains("K2") || ms.Descripcion.Contains("K5") || ms.Descripcion.Contains("K6"))).Union(db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && (ms.Descripcion.Contains("H0") || ms.Descripcion.Contains("H1") || ms.Descripcion.Contains("H2") || ms.Descripcion.Contains("H5") || ms.Descripcion.Contains("H6")))).ToList();
+                var subnivel = _services.MS_Farmacias_PermisosLista(id, numero, 1);
                 if (subnivel.Count > 0) 
                 {
-                    mn = db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && !ms.Descripcion.Contains("K0") && !ms.Descripcion.Contains("K1") && !ms.Descripcion.Contains("K2") && !ms.Descripcion.Contains("K5") && !ms.Descripcion.Contains("K6") && !ms.Descripcion.Contains("H0") && !ms.Descripcion.Contains("H1") && !ms.Descripcion.Contains("H2") && !ms.Descripcion.Contains("H5") && !ms.Descripcion.Contains("H6")).Union(db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && ms.Id == numero)); //original 20211112
+                    //mn = db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && !ms.Descripcion.Contains("K0") && !ms.Descripcion.Contains("K1") && !ms.Descripcion.Contains("K2") && !ms.Descripcion.Contains("K5") && !ms.Descripcion.Contains("K6") && !ms.Descripcion.Contains("H0") && !ms.Descripcion.Contains("H1") && !ms.Descripcion.Contains("H2") && !ms.Descripcion.Contains("H5") && !ms.Descripcion.Contains("H6")).Union(db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && ms.Id == numero)); //original 20211112
+                    mn = _services.MS_Farmacias_Permisos(id, numero, 2);
                 }
                 else 
                 {
