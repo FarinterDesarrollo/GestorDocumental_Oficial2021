@@ -190,5 +190,39 @@ namespace GestorDocumentos.Servicios
             return _ms;
         }
 
+        public string VerificarTipoRol(string nombreRol)
+        {
+            try
+            {
+                string qryTabla = "dbo." + '"' + "AspNetRoles" + '"';
+                string qryAlias = '"' + "rol" + '"';
+                string qryJoin = '"' + "rol" + '"' + "." + '"' + "Name" + '"';
+                string qryColumna = '"' + "Name" + '"';
+
+                string result = "";
+                string respuesta = "";
+
+                _globales.query = $@"select tr.tipo from {qryTabla} {qryAlias} inner join dbo.rolxtipo rxt
+                                     on {qryJoin}=rxt.rolnombre inner join dbo.tipo_rol tr
+                                     on rxt.idtipo=tr.id where {qryAlias}.{qryColumna}='{nombreRol}'";
+                result = _osql.get(_globales.query, _conexion.Conectar());
+                if(result == "A")
+                {
+                    respuesta = result;
+                }
+                else
+                {
+                    respuesta = "SinTipo";
+                }
+
+                return respuesta;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return "Error";
+            }
+        }
+
     }
 }

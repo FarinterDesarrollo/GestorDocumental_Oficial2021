@@ -250,32 +250,40 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\202001072012564_001.cs" />
-    <Compile Include="MigrationsIdentity\202001072012564_001.Designer.cs">
+    <Compile Include="MigrationsIdentity\202001072012564_001.designer.cs">
       <DependentUpon>202001072012564_001.cs</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\202001142350010_002.cs" />
-    <Compile Include="MigrationsIdentity\202001142350010_002.Designer.cs">
+    <Compile Include="MigrationsIdentity\202001142350010_002.designer.cs">
       <DependentUpon>202001142350010_002.cs</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\202001151604218_003.cs" />
-    <Compile Include="MigrationsIdentity\202001151604218_003.Designer.cs">
+    <Compile Include="MigrationsIdentity\202001151604218_003.designer.cs">
       <DependentUpon>202001151604218_003.cs</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\202001152207483_004.cs" />
-    <Compile Include="MigrationsIdentity\202001152207483_004.Designer.cs">
+    <Compile Include="MigrationsIdentity\202001152207483_004.designer.cs">
       <DependentUpon>202001152207483_004.cs</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\202003312040119_005.cs" />
-    <Compile Include="MigrationsIdentity\202003312040119_005.Designer.cs">
+    <Compile Include="MigrationsIdentity\202003312040119_005.designer.cs">
       <DependentUpon>202003312040119_005.cs</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\202004022238269_006.cs" />
-    <Compile Include="MigrationsIdentity\202004022238269_006.Designer.cs">
+    <Compile Include="MigrationsIdentity\202004022238269_006.designer.cs">
       <DependentUpon>202004022238269_006.cs</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\202004141620591_007.cs" />
-    <Compile Include="MigrationsIdentity\202004141620591_007.Designer.cs">
+    <Compile Include="MigrationsIdentity\202004141620591_007.designer.cs">
       <DependentUpon>202004141620591_007.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MigrationsIdentity\202309211401227_008.cs" />
+    <Compile Include="MigrationsIdentity\202309211401227_008.Designer.cs">
+      <DependentUpon>202309211401227_008.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MigrationsIdentity\202309211500540_009.cs" />
+    <Compile Include="MigrationsIdentity\202309211500540_009.Designer.cs">
+      <DependentUpon>202309211500540_009.cs</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -296,12 +304,15 @@
     <Compile Include="Models\ModelCollection.cs" />
     <Compile Include="Models\Pantallas.cs" />
     <Compile Include="Models\Person.cs" />
+    <Compile Include="Models\Request\TipoRolResquest.cs" />
     <Compile Include="Models\RoleViewModels.cs" />
     <Compile Include="Models\RoleXArea.cs" />
     <Compile Include="Models\RoleXAreaXCarpeta.cs" />
     <Compile Include="Models\RoleXAreaXCarpetasXSubniveles.cs" />
     <Compile Include="Models\RolPermisos.cs" />
+    <Compile Include="Models\RolxTipo.cs" />
     <Compile Include="Models\SubirArchivo.cs" />
+    <Compile Include="Models\TipoRol.cs" />
     <Compile Include="Models\Tipo_Campo.cs" />
     <Compile Include="Models\validaciones.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -588,6 +599,7 @@
     <Content Include="Content\bootstrap\variables.less" />
     <Content Include="Content\bootstrap\mixins.less" />
     <None Include="Properties\PublishProfiles\IISPRD-GD.pubxml" />
+    <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <None Include="Properties\PublishProfiles\IISQA-GD.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\Global.js" />
@@ -785,6 +797,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MigrationsIdentity\202004141620591_007.resx">
       <DependentUpon>202004141620591_007.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MigrationsIdentity\202309211401227_008.resx">
+      <DependentUpon>202309211401227_008.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MigrationsIdentity\202309211500540_009.resx">
+      <DependentUpon>202309211500540_009.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

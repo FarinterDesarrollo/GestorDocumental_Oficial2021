@@ -51,6 +51,10 @@ namespace GestorDocumentos.Models
 
         public System.Data.Entity.DbSet<GestorDocumentos.Models.RolPermisos> RolPermisos { get; set; }
 
+        //Agregado el 20/09/2023
+        public System.Data.Entity.DbSet<GestorDocumentos.Models.TipoRol> TipoRol { get; set; }
+        public System.Data.Entity.DbSet<GestorDocumentos.Models.RolxTipo> RolxTipo { get; set; }
+
         //public System.Data.Entity.DbSet<GestorDocumentos.Models.RoleViewModels> RoleViewModels { get; set; }
     }
 }

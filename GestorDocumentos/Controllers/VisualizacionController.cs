@@ -6,6 +6,8 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity.Owin;
 using GestorDocumentos.Archivos;
+using GestorDocumentos.Servicios;
+
 namespace GestorDocumentos.Controllers
 {
     [Authorize]
@@ -17,7 +19,7 @@ namespace GestorDocumentos.Controllers
         private ApplicationUserManager _userManager;
         private ApplicationRoleManager _roleManager;
         // GET: Visualizacion
-
+        private readonly FarmaciasServices _services = new FarmaciasServices();
 
         public VisualizacionController()
         {
@@ -105,11 +107,12 @@ namespace GestorDocumentos.Controllers
                         GTNIC = true;
                     }
                 }
-                
+
                 // *************************************************
+                string tipo = _services.VerificarTipoRol(rname);
 
                 //var documentos_Detalle;
-                if (areasxcarpetas.Count == 0)
+                if (areasxcarpetas.Count == 0 || tipo == "A")
                 {
                     var areasxrole = (from a in db.Areas
                                       join rxa in db.RoleXAreas on a.Id equals rxa.AreaId
