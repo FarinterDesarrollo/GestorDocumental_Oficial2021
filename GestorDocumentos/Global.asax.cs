@@ -1,3 +1,4 @@
+using GestorDocumentos.Clases;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,17 +6,55 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using System.Data;
+using GestorDocumentos.Models.Request;
 
 namespace GestorDocumentos
 {
     public class MvcApplication : System.Web.HttpApplication
     {
+        Globales _globales = new Globales();
+        Conexion _conexion = new Conexion();
+        Sqlpg _osql = new Sqlpg();
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            // ******* Precargar tipo de roles 21/09/2023 *******
+            try
+            {
+                DataTable dtTipo = new DataTable();
+                var myItem = new TipoRolItem();
+                string tipo = ""; string descripcion = "";
+
+                myItem.Item = new List<string>();
+                myItem.Item.Add("A");
+
+                for (int i = 0; i < myItem.Item.Count; i++)
+                {
+                    tipo = myItem.Item[i];
+                    _globales.query = $"select * from dbo.tipo_rol where tipo in('{tipo}')";
+                    dtTipo = _osql.ddt(_globales.query, _conexion.Conectar());
+                    if (dtTipo.Rows.Count == 0)
+                    {
+                        if (tipo == "A")
+                        {
+                            descripcion = "Tiene acceso global, puede llevar restricciones de carpeta.";
+                        }
+
+                        _globales.query = $"INSERT INTO dbo.tipo_rol(tipo,descripcion)VALUES('{tipo}','{descripcion}')";
+                        _osql.save(_globales.query, _conexion.Conectar());
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            
         }
 
         //Agregado: 24/04/2020
