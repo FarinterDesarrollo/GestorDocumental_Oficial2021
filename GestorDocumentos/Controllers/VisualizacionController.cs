@@ -80,6 +80,15 @@ namespace GestorDocumentos.Controllers
                 Session["llaveUnica"] = "";
             }
 
+            if(Nombre != null)
+            {
+                bool isNumber = int.TryParse(Nombre, out int number2);
+                if (isNumber == false)
+                {
+                    Nombre = Nombre.ToLower();
+                }
+            }
+
             if (!String.IsNullOrEmpty(Nombre))
             {
                 
@@ -141,7 +150,7 @@ namespace GestorDocumentos.Controllers
                                       ).Distinct().ToList();
 
                         List<DocDetPermisos> documentos_Detalle;
-                        string busqueda = Nombre.ToLower();
+                        string busqueda = Nombre;
 
                         documentos_Detalle = (from s in areasxcarpetasxsubniveles
                                               select new DocDetPermisos
@@ -164,7 +173,7 @@ namespace GestorDocumentos.Controllers
                     else
                     {
                         List<DocDetPermisos> documentos_Detalle;
-                        string busqueda = Nombre.ToLower();
+                        string busqueda = Nombre;
 
                         documentos_Detalle = (from s in areasxrole
                                               select new DocDetPermisos
@@ -189,7 +198,7 @@ namespace GestorDocumentos.Controllers
                 else
                 {
                     List<DocDetPermisos> documentos_Detalle;
-                    string busqueda = Nombre.ToLower();
+                    string busqueda = Nombre;
                     documentos_Detalle = (from s in areasxcarpetas
                                           select new DocDetPermisos
                                           {

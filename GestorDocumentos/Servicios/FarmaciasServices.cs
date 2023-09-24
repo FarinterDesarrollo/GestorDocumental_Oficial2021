@@ -1,5 +1,7 @@
 ﻿using GestorDocumentos.Clases;
 using GestorDocumentos.Models;
+using GestorDocumentos.Models.Request;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -216,6 +218,94 @@ namespace GestorDocumentos.Servicios
                 }
 
                 return respuesta;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return "Error";
+            }
+        }
+
+        public List<RolxTipoRequest> LsRolxTipo()
+        {
+            try
+            {
+                string qryTabla = "dbo." + '"' + "AspNetRoles" + '"';
+                string qryAlias = '"' + "rol" + '"';
+                string qryJoin = '"' + "rol" + '"' + "." + '"' + "Name" + '"';
+                string qryColumna = '"' + "Name" + '"';
+
+                DataTable result = new DataTable();
+                List<RolxTipoRequest> respuesta = new List<RolxTipoRequest>();
+
+                _globales.query = $@"select {qryJoin} AS nombre,CASE WHEN idtipo > 0 THEN 1 ELSE 0 END AS idtipo, tipo  
+                                     from {qryTabla} {qryAlias} left join dbo.rolxtipo rxt
+                                     on {qryJoin}=rxt.rolnombre left join dbo.tipo_rol tr on rxt.idtipo=tr.id";
+
+                result = _osql.ddt(_globales.query, _conexion.Conectar());
+
+                foreach(DataRow item in result.Rows)
+                {
+                    respuesta.Add(new RolxTipoRequest { 
+                        nombre=item.Field<string>("nombre"),
+                        idtipo=item.Field<int>("idtipo"),
+                        tipo=item.Field<string>("tipo")
+                    });
+                }
+
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                List<RolxTipoRequest> respuesta = new List<RolxTipoRequest>();
+                Console.WriteLine(ex.Message);
+                respuesta.Add(new RolxTipoRequest {
+                    error = ex.Message
+                });
+                return respuesta;
+            }
+        }
+
+        public string GuardarTipoRol(string roles, string tipo)
+        {
+            try
+            {
+                // Heredar valores de clase
+                List<RolxTipoRequest> value = new List<RolxTipoRequest>();
+
+                // Divide la cadena en elementos individuales
+                string[] elementos = roles.Split(',');
+
+                // Utilizar un HashSet para almacenar valores únicos
+                HashSet<string> valoresUnicos = new HashSet<string>();
+
+                // Agregar elementos al HashSet (eliminando duplicados)
+                foreach (string elemento in elementos)
+                {
+                    value.Add(new RolxTipoRequest { 
+                        nombre=elemento,
+                        tipo=tipo
+                    });
+                }
+
+                if (tipo == "A")
+                {
+                    foreach(var item in value)
+                    {
+                        _globales.query = $"INSERT INTO dbo.rolxtipo VALUES('{item.nombre}',1)";
+                        _osql.save(_globales.query, _conexion.Conectar());
+                    }
+                }
+                else
+                {
+                    foreach (var item in value)
+                    {
+                        _globales.query = $"DELETE FROM dbo.rolxtipo WHERE rolnombre='{item.nombre}' and idtipo=1";
+                        _osql.save(_globales.query, _conexion.Conectar());
+                    }
+                }
+
+                return "OK";
             }
             catch(Exception ex)
             {
