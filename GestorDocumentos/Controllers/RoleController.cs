@@ -12,6 +12,8 @@ using System.Data;
 using GestorDocumentos.Clases;
 using System.Net;
 using System.Globalization;
+using GestorDocumentos.Servicios;
+using GestorDocumentos.Models.Request;
 
 namespace GestorDocumentos.Controllers
 {
@@ -20,6 +22,7 @@ namespace GestorDocumentos.Controllers
     {
         private ApplicationRoleManager _roleManager;
         public ApplicationDbContext db = new ApplicationDbContext();
+        private readonly FarmaciasServices _services = new FarmaciasServices();
 
         public RoleController()
         {
@@ -469,5 +472,36 @@ namespace GestorDocumentos.Controllers
             await RoleManager.DeleteAsync(role);
             return RedirectToAction("Index");
         }
+
+
+        public ActionResult ViewRolesxTipo(string nombre, string tipo)
+        {
+            try
+            {
+                List<RolxTipoRequest> lista = new List<RolxTipoRequest>();
+                if(tipo !=null && tipo != "")
+                {
+                    string accion = _services.GuardarTipoRol(nombre, tipo);
+                    if (accion == "OK")
+                    {
+                        ViewBag.Mensaje = "El permiso fue otorgado satisfactoriamente.";
+
+                    }
+                    else
+                    {
+                        ViewBag.Error = accion;
+                    }
+                }
+
+                lista = _services.LsRolxTipo();
+                return View(lista);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return HttpNotFound(ex.Message);
+            }
+        }
+
     }
 }
