@@ -1,0 +1,472 @@
+﻿@model GestorDocumentos.Models.Request.FarmaciasSubNivelesRequest
+@{
+    ViewBag.Title = "Editar";
+}
+
+@using (Html.BeginForm("Edit", "FarmaciasSubNivelesVisualizar", FormMethod.Post, new { id = "Form1" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <br />
+        <h4 style="text-align: center; color: green;">Mentenimiento de farmacias visualizables en subniveles </h4>
+        <div class="form-group col-md-10">
+            @Html.ActionLink("<< Volver encabezado de farmacias", "Index", null, new { @style = "color: Green" })
+        </div>
+        <hr />
+    </div>
+    <div id="errorDiv" class="alert alert-danger" role="alert" hidden>
+        <small id="error" class="form-text text-muted">Error:</small>
+    </div>
+
+    <input type="text" id="id" name="id" value="@Model.farmaciasEncabezado.id" hidden />
+    <input type="text" id="emp_id" name="emp_id" value="@Model.farmaciasEncabezado.emp_id" hidden />
+
+    <div class="container">
+        <div class="row">
+            <div class="col-7">
+                <label for="aliasCadena">Alias de Cadena</label>
+                <input type="text" class="form-control" id="alias_cadena" name="alias_cadena" value="@Model.farmaciasEncabezado.alias_cadena" aria-describedby="aliasCadenaHelp" maxlength="255" oninput="InputToUpper(this);" readonly />
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="chkAliasCadena">
+                    <label class="form-check-label" for="chkAliasCadena">Habilitar</label>
+                </div>
+            </div>
+            <div class="col" style="margin-top: 27.5px;">
+                <button type="submit" class="btn btn-outline-success" onclick="return validarCampos();">Modificar Encabezado</button>
+                <button type="button" id="btnModal" class="btn btn-outline-primary" data-toggle="modal" data-target="#exampleModal2">Cargar Documentos</button>
+            </div>
+        </div>
+    </div>
+
+    <!--Tabla-->
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <table class="table table-responsive-lg" id="tabla">
+                    <thead>
+                        <tr>
+                            <th hidden>
+                                Id
+                            </th>
+                            <th hidden>
+                                Fe Id
+                            </th>
+                            <th style="text-align: left; font-weight: bold">
+                                Suc Id
+                            </th>
+                            <th style="text-align: left; font-weight: bold">
+                                Suc Nombre
+                            </th>
+                            <th style="text-align: left; font-weight: bold">
+                                Abreviación
+                            </th>
+                            <th scope="row" style="text-align: left; font-weight: bold">
+                                Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.farmaciasDetalle)
+                        {
+                            <tr>
+                                <td hidden>
+                                    @item.consecutivo
+                                </td>
+                                <td hidden>
+                                    @item.fe_id
+                                </td>
+                                <td>
+                                    @item.suc_id
+                                </td>
+                                <td>
+                                    @item.suc_nombre
+                                </td>
+                                <td>
+                                    @item.abreviacion
+                                </td>
+                                <td>
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                @*@Html.ActionLink("Editar", "Edit", new { id = item.consecutivo }, new { @style = "color: Green" })*@
+                                                <button class="btn btn-success obtener-valor" data-toggle="modal" data-target="#exampleModal">Modificar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group col-md-10">
+        @Html.ActionLink("<< Volver encabezado de farmacias", "Index", null, new { @style = "color: Green" })
+    </div>
+
+    <!--Modal 1-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modificar información</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="consecutivo" name="consecutivo" hidden />
+                    <input type="text" id="empId" name="empId" hidden />
+
+                    <label for="abreviacion">Abreviación</label>
+                    <input type="text" class="form-control" id="abreviacion" name="abreviacion" aria-describedby="abreviacion" oninput="InputToUpper(this);" readonly />
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="chkAbreviacion">
+                        <label class="form-check-label" for="chkAbreviacion">Habilitar</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="return guardarInformacionFila();">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    if (!string.IsNullOrEmpty(ViewBag.Success))
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                let responseSuccess = '@ViewBag.Success';
+                swal({
+                    title: "¡Éxito!",
+                    text: responseSuccess,
+                    icon: "success", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+            };
+        </script>
+    }
+
+    if (!string.IsNullOrEmpty(ViewBag.Error))
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                let responseError = '@ViewBag.Error';
+                swal({
+                    title: "¡Error!",
+                    text: responseError,
+                    icon: "error", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+            };
+        </script>
+    }
+
+    if (!string.IsNullOrEmpty(ViewBag.Aviso))
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                let responseAviso = '@ViewBag.Aviso';
+                swal({
+                    title: "¡Atención!",
+                    text: responseAviso,
+                    icon: "warning", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+            };
+        </script>
+    }
+}
+
+<!--Modal 2-->
+@using (Html.BeginForm("Upload", "FarmaciasSubNivelesVisualizar", FormMethod.Post, new { id = "Form2", enctype = "multipart/form-data" }))
+{
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modificar información desde archivo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="emp_id2" name="emp_id2" value="@Model.farmaciasEncabezado.emp_id" hidden />
+                    <input type="text" id="fileInfo" name="fileInfo" hidden />
+
+                    <input type="file" id="archivoInput" name="archivoInput" />
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary" onclick="return uploadExcel();">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts{
+
+    <!-- Agrega las bibliotecas y hojas de estilo necesarias -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.print.min.js"></script>
+
+    <script type="text/javascript">
+        $(Document).ready(function () {
+            $('#tabla').DataTable({
+                "paging": true,
+                "ordering": true,
+                "info": true,
+                "pagingType": "full_numbers",
+                "searching": true,
+                "pageLength": 10,
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                //Lenguaje:
+                "language": {
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "previous": "Anterior",
+                        "next": "Siguiente",
+                    },
+                    "info": "Mostrar Entradas de _START_ a _TOTAL_",
+                    "infoEmpty": "Total de Entradas 0",
+                    "infoFiltered": "Filtrado de _MAX_ entradas totales",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "search": "Filtrar"
+                },
+                dom: 'Blfrtip',
+                order: [[0, 'asc']],
+                buttons: [
+                    /*'print', 'copy', 'excel', 'pdf'*/
+                    {
+                        extend: 'copy',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="far fa-file-copy"></i> Copiar',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4]
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="far fa-file-excel" title="Exportar a excel"></i> Excel',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4]
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="far fa-file-pdf" title= "Guardar como PDF"></i> Pdf',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4]
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="fas fa-file-csv" title= "Guardar como CSV"></i> CSV',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4]
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="fas fa-print"></i> Imprimir tabla',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4]
+                        }
+                    }
+                ]
+            });
+        });
+
+        // Agregar controlador de clic a los botones
+        $(".obtener-valor").click(function () {
+            // Evitar que el formulario se envíe
+            event.preventDefault();
+
+            // Obtener la fila a la que pertenece el botón
+            var fila = $(this).closest('tr');
+
+            // Obtener el valor de la primera celda de la fila
+            var valorCelda = fila.find('td:first').text();
+            var valorTexto = fila.find('td:eq(4)').text();
+
+            // Realizar la acción deseada con el valor de la celda
+            /*alert("Valor de la primera celda: " + valorCelda);*/
+            var empId = $("#emp_id").val();
+
+            $("#consecutivo").attr({ "value": valorCelda });
+            $("#abreviacion").attr({ "value": valorTexto.trim() });
+            $("#empId").attr({ "value": empId });
+        });
+
+        function guardarInformacionFila() {
+            var empId = $("#empId").val();
+            var consecutivo = $("#consecutivo").val();
+            var abreviacion = $('#abreviacion').val();
+
+            if (abreviacion.length <= 0) {
+                swal({
+                    title: "¡Error!",
+                    text: "Tiene que especificar un valor.",
+                    icon: "error", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+                return false;
+            }
+
+            swal({
+                title: "¿Desea confirmar la solicitud?",
+                text: "¡Se procederá a cambiar el valor seleccionado!",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Confirmar",
+                closeOnConfirm: false,
+                buttons: true,
+                buttons: ["Cancelar", "Aceptar"]
+            }).then(
+                function (isConfirm) {
+                    if (isConfirm) {
+                        location.href = '@Url.Action("GuardarAbreviacion", "FarmaciasSubNivelesVisualizar")?consecutivo=' + consecutivo + "&abreviacion=" + abreviacion + "&empId=" + empId;
+                        documentos = null;
+                    } else {
+                        swal("¡Cancelado!", "No se pudo realizar la acción solicitada", "error");
+                    }
+                }
+            );
+        }
+
+        // Obtener elementos del DOM usando jQuery
+        const $checkbox = $("#chkAliasCadena");
+        const $editableText = $("#alias_cadena");
+
+        // Agregar un evento al checkbox para manejar los cambios
+        $checkbox.on("change", function () {
+            $editableText.prop("readonly", !$checkbox.is(":checked")); // Hacer el campo de texto de solo lectura o editable
+            if ($checkbox.is(":checked")) {
+                $editableText.focus(); // Enfocar el campo de texto si el checkbox está marcado
+            }
+        });
+
+        // Obtener elementos del DOM usando jQuery 2
+        const $checkbox2 = $("#chkAbreviacion");
+        const $editableText2 = $("#abreviacion");
+
+        // Agregar un evento al checkbox para manejar los cambios 2
+        $checkbox2.on("change", function () {
+            $editableText2.prop("readonly", !$checkbox2.is(":checked")); // Hacer el campo de texto de solo lectura o editable
+            if ($checkbox2.is(":checked")) {
+                $editableText2.focus(); // Enfocar el campo de texto si el checkbox está marcado
+            }
+        });
+
+        // Manejar el evento change del input de tipo file
+        $('input[type="file"]').change(function () {
+            var fileName = $(this).val(); // Obtener el nombre del archivo seleccionado
+            // Hacer algo con el nombre del archivo, como mostrarlo en un div
+            $('#fileInfo').text('Archivo seleccionado: ' + fileName);
+        });
+
+        function uploadExcel() {
+            var empId = $("#emp_id").val();
+            var inputFile = $("#archivoInput")[0].files[0];
+            var form = document.getElementById("Form2");
+
+            event.preventDefault();
+
+            if (empId.length <= 0) {
+                swal({
+                    title: "¡Error!",
+                    text: "Falta el valor para el parámetro de empresa.",
+                    icon: "error", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+                return false;
+            }
+
+            if (inputFile) {
+                // Realiza una solicitud AJAX para enviar el archivo al servidor
+                swal({
+                    title: "¿Desea confirmar la solicitud?",
+                    text: "¡Se procederá actualizar la abreviación para las sucursales \n en cuales se detecte un cambio en el valor!",
+                    type: "warning",
+                    showCancelButton: true,
+                    cancelButtonText: "Cancelar",
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Confirmar",
+                    closeOnConfirm: false,
+                    buttons: true,
+                    buttons: ["Cancelar", "Aceptar"]
+                }).then(
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            form.submit();
+                        } else {
+                            swal("¡Cancelado!", "No se pudo realizar la acción solicitada", "error");
+                        }
+                    }
+                );
+            }
+            else{
+                swal("¡Cancelado!", "Por favor selecciona un archivo.", "error");
+            }
+        }
+
+        function validarCampos() {
+            var form = document.getElementById("Form1");
+            var aliasCadena = $("#alias_cadena").val();
+            var empId = $("#emp_id").val();
+            var id = $("#id").val();
+
+            event.preventDefault();
+
+            if (aliasCadena) {
+                swal({
+                    title: "¿Desea confirmar la solicitud?",
+                    text: "¡Se procederá actualizar el alias de cadena",
+                    type: "warning",
+                    showCancelButton: true,
+                    cancelButtonText: "Cancelar",
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Confirmar",
+                    closeOnConfirm: false,
+                    buttons: true,
+                    buttons: ["Cancelar", "Aceptar"]
+                }).then(
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            @*location.href = '@Url.Action("Edit", "FarmaciasSubNivelesVisualizar")?emp_id=' + empId + "&id=" + id;*@
+                            form.submit();
+                        } else {
+                            swal("¡Cancelado!", "No se pudo realizar la acción solicitada", "error");
+                        }
+                    }
+                );
+            }
+            else {
+                swal("¡Cancelado!", "El campo de alias de cadena no debe de estar vacio.", "error");
+                return false;
+            }
+        }
+
+        var empId = $("#emp_id").val();
+        window.history.replaceState({}, 'Edit', '/FarmaciasSubNivelesVisualizar/Edit?empId=' + empId);
+    </script>
+}

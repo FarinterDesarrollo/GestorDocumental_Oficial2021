@@ -15,7 +15,8 @@ namespace GestorDocumentos
     {
         Globales _globales = new Globales();
         Conexion _conexion = new Conexion();
-        Sqlpg _osql = new Sqlpg();
+        Sqlpg _oSqlpg = new Sqlpg();
+        Sql _oSql = new Sql();
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
@@ -37,7 +38,7 @@ namespace GestorDocumentos
                 {
                     tipo = myItem.Item[i];
                     _globales.query = $"select * from dbo.tipo_rol where tipo in('{tipo}')";
-                    dtTipo = _osql.ddt(_globales.query, _conexion.Conectar());
+                    dtTipo = _oSqlpg.ddt(_globales.query, _conexion.Conectar());
                     if (dtTipo.Rows.Count == 0)
                     {
                         if (tipo == "A")
@@ -46,9 +47,10 @@ namespace GestorDocumentos
                         }
 
                         _globales.query = $"INSERT INTO dbo.tipo_rol(tipo,descripcion)VALUES('{tipo}','{descripcion}')";
-                        _osql.save(_globales.query, _conexion.Conectar());
+                        _oSqlpg.save(_globales.query, _conexion.Conectar());
                     }
                 }
+
             }
             catch(Exception ex)
             {

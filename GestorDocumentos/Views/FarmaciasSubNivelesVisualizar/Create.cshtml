@@ -1,0 +1,189 @@
+﻿@model GestorDocumentos.Models.Request.FarmaciasEncabezadoRequest
+@{
+    ViewBag.Title = "Filtrar Farmacias";
+}
+
+@using (Html.BeginForm("Create", "FarmaciasSubNivelesVisualizar", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <h4 style="text-align: center; color: green;">Agregar Farmacias para visualización en sub niveles </h4>
+        <div class="btn-group col-md-10">
+            @Html.ActionLink("<< Volver encabezado de farmacias", "Index", null, new { @style = "color: Green" })
+        </div>
+        <hr />
+        <div id="errorDiv" class="alert alert-danger" role="alert" hidden>
+            <small id="error" class="form-text text-muted">Error:</small>
+        </div>
+        <div class="btn-group col-md-10">
+            <label for="id">Base de datos</label>
+            @Html.DropDownList("id", new SelectList(ViewBag.ListaFarmacias, "Value", "Text"), "---Select Detalle---", htmlAttributes: new { @class = "form-control btn btn-secondary dropdown-toggle" })
+        </div>
+        <hr />
+        <input type="text" id="baseDatos" name="baseDatos" hidden />
+        <input type="text" id="empId" name="empId" hidden />
+        <div class="form-group col-md-10">
+            <label for="empNombre">Empresa</label>
+            <input type="text" class="form-control" id="empNombre" name="empNombre" aria-describedby="empNombreHelp" maxlength="255" oninput="InputToUpper(this);" readonly />
+            <small id="empNombreHelp" class="form-text text-muted">Nombre de la empresa.</small>
+        </div>
+        <div class="form-group col-md-10">
+            <label for="cadenaNombre">Cadena</label>
+            <input type="text" class="form-control" id="cadenaNombre" name="cadenaNombre" aria-describedby="cadenaNombreHelp" maxlength="255" oninput="InputToUpper(this);" readonly />
+            <small id="cadenaNombreHelp" class="form-text text-muted">Nombre de la cadena.</small>
+        </div>
+        <div class="form-group col-md-10">
+            <label for="aliasCadena">Alias de Cadena</label>
+            <input type="text" class="form-control" id="aliasCadena" name="aliasCadena" aria-describedby="aliasCadenaHelp" maxlength="255" oninput="InputToUpper(this);" required />
+            <small id="aliasCadenaHelp" class="form-text text-muted">Puede establecer un nombre corto para la cadena ejemplo: FARMACIAS KIELSA HN.</small>
+        </div>
+        <div class="form-group col-md-10">
+            <label for="aliasCadena">Abreviación</label>
+            <input type="text" class="form-control" id="abreviacion" name="abreviacion" aria-describedby="abreviacionHelp" maxlength="10" oninput="InputToUpper(this);" required />
+            <small id="abreviacionHelp" class="form-text text-muted">Aquí establezca la abreviación correspondiente a la farmacia ejemplo: Kielsa => K.</small>
+        </div>
+        @*<div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+            </div>*@
+
+        <div class="form-group col-md-10">
+            @*@Html.ActionLink("<< Página anterior", "Index", null, new { @style = "color: Green" })*@
+            <button type="submit" class="btn btn-primary" onclick="return validarCampos();">Agregar Farmacias</button>
+            <button type="reset" class="btn btn-secondary" onclick="return limpiarCampos();">Limpiar Controles</button>
+        </div>
+
+        <div class="form-group col-md-10">
+            @Html.ActionLink("<< Volver encabezado de farmacias", "Index", null, new { @style = "color: Green" })
+        </div>
+    </div>
+
+    if (!string.IsNullOrEmpty(ViewBag.Success))
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                let responseSuccess = '@ViewBag.Success';
+                swal({
+                    title: "¡Éxito!",
+                    text: responseSuccess,
+                    icon: "success", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+            };
+        </script>
+    }
+
+    if (!string.IsNullOrEmpty(ViewBag.Error))
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                let responseError = '@ViewBag.Error';
+                swal({
+                    title: "¡Error!",
+                    text: responseError,
+                    icon: "error", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+            };
+        </script>
+    }
+}
+
+@section Scripts{
+    <script type="text/javascript">
+
+        $("#id").change(function () {
+            var bdName = $(this).find("option:selected").text();
+
+            $('#errorDiv').hide();
+            $('#error').empty();
+
+            if (bdName == "---Select Detalle---") {
+                $('#empId').attr({ "value": "" });
+                $('#empNombre').attr({ "value": "" });
+                $('#cadenaNombre').attr({ "value": "" });
+                return false;
+            }
+
+            $('#baseDatos').attr({ "value": bdName });
+
+            $.ajax({
+                url: '/FarmaciasSubNivelesVisualizar/GeMostrarData?bdName=' + bdName, // Reemplaza 'Controlador' con el nombre de tu controlador
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // Verifica si 'data' es undefined
+                    if (data !== undefined) {
+                        // 'data' contiene los valores del JSON devuelto
+                        var empId = data[0].empId;
+                        var empNombre = data[0].empNombre.toUpperCase();
+                        var cadenaNombre = data[0].cadenaNombre.toUpperCase();
+                        var error = data[0].error;
+
+                        // Puedes usar 'nombre' y 'edad' en tu código JavaScript aquí
+                        $('#empId').attr({ "value": empId });
+                        $('#empNombre').attr({ "value": empNombre });
+                        $('#cadenaNombre').attr({ "value": cadenaNombre });
+
+                        if (error) {
+                            $('#errorDiv').show();
+                            $('#error').text("Se produjo un error:" + error);
+                        }
+
+                    } else {
+                        console.error("La respuesta JSON es undefined.");
+                    }
+
+                },
+                error: function () {
+                    // Maneja los errores aquí
+                    console.error("Hubo un error en la solicitud AJAX.");
+                }
+            });
+        });
+
+        function validarCampos() {
+            var empId = $("#empId").val();
+            var aliasCadena = $("#aliasCadena").val();
+            var abreviacion = $("#abreviacion").val();
+
+            if (empId == "") {
+                swal({
+                    title: "¡Error!",
+                    text: "¡Selecciones una base de datos!",
+                    icon: "error", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+                return false;
+            }
+
+            if (aliasCadena == "") {
+                swal({
+                    title: "¡Error!",
+                    text: "¡El campo Alias de cadena no debe de estar vacio!",
+                    icon: "error", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+                return false;
+            }
+
+            if (abreviacion == "") {
+                swal({
+                    title: "¡Error!",
+                    text: "¡El campo abreviación no debe de estar vacio!",
+                    icon: "error", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+                return false;
+            }
+        };
+
+        function limpiarCampos() {
+            $('#empId').attr({ "value": "" });
+            $('#empNombre').attr({ "value": "" });
+            $('#cadenaNombre').attr({ "value": "" });
+        };
+
+        window.history.replaceState({}, 'Create', '/FarmaciasSubNivelesVisualizar/Create');
+    </script>
+}
