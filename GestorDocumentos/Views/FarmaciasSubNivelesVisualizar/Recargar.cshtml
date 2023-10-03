@@ -1,0 +1,217 @@
+﻿@model GestorDocumentos.Models.Request.FarmaciasEncabezadoRequest
+@{
+    ViewBag.Title = "Recargar Farmacias";
+}
+
+
+@using (Html.BeginForm("Recargar", "FarmaciasSubNivelesVisualizar", FormMethod.Post, new { id = "Form1" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <h4 style="text-align: center; color: green;">Recargar Información de Farmacias</h4>
+        <div class="btn-group col-md-10">
+            @Html.ActionLink("<< Volver encabezado de farmacias", "Index", null, new { @style = "color: Green" })
+        </div>
+        <hr />
+        <div id="errorDiv" class="alert alert-danger" role="alert" hidden>
+            <small id="error" class="form-text text-muted">Error:</small>
+        </div>
+        <div class="btn-group col-md-10">
+            <label for="id">Base de datos</label>
+            @Html.DropDownList("data", new SelectList(ViewBag.ListaFarmacias, "Value", "Text"), "---Select Detalle---", htmlAttributes: new { @class = "form-control btn btn-secondary dropdown-toggle" })
+        </div>
+        <hr />
+        <input type="text" id="baseDatos" name="baseDatos" hidden />
+        <input type="text" id="empId" name="empId" hidden />
+
+        <div class="form-group col-md-10">
+            <label for="empNombre">Empresa</label>
+            <input type="text" class="form-control" id="empNombre" name="empNombre" aria-describedby="empNombreHelp" maxlength="255" oninput="InputToUpper(this);" readonly />
+        </div>
+
+        <div class="form-group col-md-10">
+            <label for="notacion">Notación</label>
+            <input type="text" class="form-control" id="abreviacion" name="abreviacion" aria-describedby="abreviacionHelp" maxlength="5" oninput="InputToUpper(this);" readonly />
+        </div>
+
+        <div class="form-group col-md-10">
+            <button type="submit" class="btn btn-warning" onclick="return recargarInformacion();">Recargar Información</button> |
+            <button type="reset" class="btn btn-secondary" onclick="return limpiarCampos();">Limpiar Controles</button>
+        </div>
+
+        <div class="form-group col-md-10">
+            @Html.ActionLink("<< Volver encabezado de farmacias", "Index", null, new { @style = "color: Green" })
+        </div>
+    </div>
+
+    if (!string.IsNullOrEmpty(ViewBag.Success))
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                let responseSuccess = '@ViewBag.Success';
+                swal({
+                    title: "¡Éxito!",
+                    text: responseSuccess,
+                    icon: "success", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+            };
+        </script>
+    }
+
+    if (!string.IsNullOrEmpty(ViewBag.Error))
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                let responseError = '@ViewBag.Error';
+                swal({
+                    title: "¡Error!",
+                    text: responseError,
+                    icon: "error", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+            };
+        </script>
+    }
+
+    if (!string.IsNullOrEmpty(ViewBag.Aviso))
+    {
+        <script type="text/javascript">
+            window.onload = function () {
+                let responseAviso = '@ViewBag.Aviso';
+                swal({
+                    title: "¡Atención!",
+                    text: responseAviso,
+                    icon: "warning", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+            };
+        </script>
+    }
+}
+
+@section Scripts{
+    
+    <script type="text/javascript">
+
+        // Obtener elementos del DOM usando jQuery 2
+        const $checkbox = $("#chkNotacion");
+        const $editableText = $("#notacion");
+
+        // Agregar un evento al checkbox para manejar los cambios 2
+        $checkbox.on("change", function () {
+            $editableText.prop("readonly", !$checkbox.is(":checked")); // Hacer el campo de texto de solo lectura o editable
+            if ($checkbox.is(":checked")) {
+                $editableText.focus(); // Enfocar el campo de texto si el checkbox está marcado
+            }
+        });
+
+        function limpiarCampos() {
+            $('#baseDatos').attr({ "value": "" });
+            $('#empId').attr({ "value": "" });
+            $('#empNombre').attr({ "value": "" });
+        };
+
+        $("#data").change(function () {
+            var bdName = $(this).find("option:selected").text();
+
+            $('#errorDiv').hide();
+            $('#error').empty();
+
+            if (bdName == "---Select Detalle---") {
+                $('#empId').attr({ "value": "" });
+                $('#empNombre').attr({ "value": "" });
+                $('#baseDatos').attr({ "value": "" });
+                return false;
+            }
+
+            $('#baseDatos').attr({ "value": bdName });
+
+            $.ajax({
+                url: '/FarmaciasSubNivelesVisualizar/GetRecargar?bdName=' + bdName, // Reemplaza 'Controlador' con el nombre de tu controlador
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // Verifica si 'data' es undefined
+                    if (data !== undefined) {
+                        // 'data' contiene los valores del JSON devuelto
+                        var empId = data[0].empId;
+                        var empNombre = data[0].empNombre.toUpperCase();
+                        var notacion = data[0].notacion.toUpperCase();
+                        var error = data[0].error;
+
+                        // Puedes usar 'nombre' y 'edad' en tu código JavaScript aquí
+                        $('#empId').attr({ "value": empId });
+                        $('#empNombre').attr({ "value": empNombre });
+                        $('#abreviacion').attr({ "value": notacion });
+
+                        if (error) {
+                            $('#errorDiv').show();
+                            $('#error').text("Se produjo un error:" + error);
+                        }
+
+                    } else {
+                        $('#error').text("La respuesta JSON es undefined.");
+                    }
+
+                },
+                error: function () {
+                    // Maneja los errores aquí
+                    $('#error').text("Hubo un error en la solicitud AJAX.");
+                }
+            });
+        });
+
+        function recargarInformacion() {
+            var form = document.getElementById("Form1");
+            var empId = $("#empId").val();
+            var notacion = $("#abreviacion").val();
+
+            event.preventDefault();
+
+            if (empId == "") {
+                swal({
+                    title: "¡Error!",
+                    text: "¡Selecciones una base de datos!",
+                    icon: "error", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+                return false;
+            }
+
+            if (notacion == "") {
+                swal({
+                    title: "¡Error!",
+                    text: "¡La notación tiene que tener un valor!",
+                    icon: "error", //built in icons: success, warning, error, info
+                    timer: 5000, //timeOut for auto-close
+                });
+                return false;
+            }
+
+            swal({
+                title: "¿Desea confirmar la solicitud?",
+                text: "¡Se procederá a recargar la información de la farmacia seleccionada!",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Confirmar",
+                closeOnConfirm: false,
+                buttons: true,
+                buttons: ["Cancelar", "Aceptar"]
+            }).then(
+                function (isConfirm) {
+                    if (isConfirm) {
+                         @*location.href = '@Url.Action("Recargar", "FarmaciasSubNivelesVisualizar")';*@
+                        form.submit();
+                    } else {
+                        swal("¡Cancelado!", "No se pudo realizar la acción solicitada", "error");
+                    }
+                }
+            );
+        }
+
+        window.history.replaceState({}, 'Recargar', '/FarmaciasSubNivelesVisualizar/Recargar');
+    </script>    
+}

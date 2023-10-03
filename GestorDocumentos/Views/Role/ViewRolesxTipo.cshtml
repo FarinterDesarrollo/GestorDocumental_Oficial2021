@@ -125,14 +125,11 @@
 }
 
 @section Scripts{
-    <script src="https://cdn.datatables.net/fixedcolumns/3.2.2/js/dataTables.fixedColumns.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js\"></script>
-    <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
-    <link href="https://cdn.datatables.net/fixedcolumns/3.2.2/css/fixedColumns.dataTables.min.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">
+    <!-- Agrega las bibliotecas y hojas de estilo necesarias -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.print.min.js"></script>
 
     <script type="text/javascript">
 
@@ -175,7 +172,7 @@
                         className: 'btn btn-default rounded-0',
                         text: '<i class="far fa-file-excel"></i> Exportar a excel',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0]
                         }
                     },
                     {
@@ -185,7 +182,7 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0]
                         }
                     },
                     {
@@ -193,7 +190,7 @@
                         className: 'btn btn-default rounded-0',
                         text: '<i class="fas fa-file-csv" title= "Guardar como CSV"></i> CSV',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0]
                         }
                     },
                     {
@@ -201,7 +198,7 @@
                         className: 'btn btn-default rounded-0',
                         text: '<i class="fas fa-print"></i> Imprimir tabla',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0]
                         }
                     }
                 ]
@@ -240,7 +237,7 @@
                         className: 'btn btn-default rounded-0',
                         text: '<i class="far fa-file-excel"></i> Exportar a excel',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0]
                         }
                     },
                     {
@@ -250,7 +247,7 @@
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0]
                         }
                     },
                     {
@@ -258,7 +255,7 @@
                         className: 'btn btn-default rounded-0',
                         text: '<i class="fas fa-file-csv" title= "Guardar como CSV"></i> CSV',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0]
                         }
                     },
                     {
@@ -266,7 +263,7 @@
                         className: 'btn btn-default rounded-0',
                         text: '<i class="fas fa-print"></i> Imprimir tabla',
                         exportOptions: {
-                            columns: [0, 1]
+                            columns: [0]
                         }
                     }
                 ]
