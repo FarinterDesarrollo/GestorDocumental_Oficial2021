@@ -570,8 +570,15 @@ namespace GestorDocumentos.Controllers
                 documento_Detalle.Nombre_Ori = nombre;
                 documento_Detalle.Nombre_Des = nombrenuevo;
                 //Agregado:14042020
-                var dateQuery = db.Database.SqlQuery<string>("select TO_CHAR(now(), 'DD/MM/YYYY HH24:MI:SS')");
-                DateTime serverDate = Convert.ToDateTime(dateQuery.AsEnumerable().First());
+                //var dateQuery = db.Database.SqlQuery<string>("select TO_CHAR(now(), 'DD/MM/YYYY HH24:MI:SS')");
+                //DateTime serverDate = Convert.ToDateTime(dateQuery.AsEnumerable().First());
+
+                // *** Modificado el 03/10/2023 ***
+                DateTime fechaserver = DateTime.Now;
+                string sfechaserver = fechaserver.ToString("dd/MM/yyyy HH:mm:ss");
+                DateTime serverDate = Convert.ToDateTime(sfechaserver);
+                //*** Fin Modificación ***
+
                 //DateTime FechaA = DateTime.Today;
                 DateTime FechaA = serverDate;
                 DateTime FechaR = context.Documentos_Detalle.FirstOrDefault(i => i.Id == documento_Detalle.Id).FechaRegistro;
