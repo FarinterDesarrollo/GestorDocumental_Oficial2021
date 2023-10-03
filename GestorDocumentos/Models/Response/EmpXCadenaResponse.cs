@@ -10,6 +10,7 @@ namespace GestorDocumentos.Models.Response
         public short empId { get; set; }
         public string empNombre { get; set; }
         public string cadenaNombre { get; set; }
+        public string notacion { get; set; }
     }
 
     public partial class ErrorResponse

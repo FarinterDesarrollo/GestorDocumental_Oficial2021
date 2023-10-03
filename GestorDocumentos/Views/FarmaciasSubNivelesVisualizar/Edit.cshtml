@@ -24,12 +24,20 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-7">
+            <div class="col-5">
                 <label for="aliasCadena">Alias de Cadena</label>
                 <input type="text" class="form-control" id="alias_cadena" name="alias_cadena" value="@Model.farmaciasEncabezado.alias_cadena" aria-describedby="aliasCadenaHelp" maxlength="255" oninput="InputToUpper(this);" readonly />
                 <div class="form-group form-check">
                     <input type="checkbox" class="form-check-input" id="chkAliasCadena">
                     <label class="form-check-label" for="chkAliasCadena">Habilitar</label>
+                </div>
+            </div>
+            <div class="col-2">
+                <label for="notacion">Notación</label>
+                <input type="text" class="form-control" id="notacion" name="notacion" value="@Model.farmaciasEncabezado.notacion" aria-describedby="aliasCadenaHelp" maxlength="5" oninput="InputToUpper(this);" readonly />
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="chkNotacion">
+                    <label class="form-check-label" for="chkNotacion">Habilitar</label>
                 </div>
             </div>
             <div class="col" style="margin-top: 27.5px;">
@@ -89,7 +97,6 @@
                                     <div class="container">
                                         <div class="row">
                                             <div class="col-3">
-                                                @*@Html.ActionLink("Editar", "Edit", new { id = item.consecutivo }, new { @style = "color: Green" })*@
                                                 <button class="btn btn-success obtener-valor" data-toggle="modal" data-target="#exampleModal">Modificar</button>
                                             </div>
                                         </div>
@@ -126,6 +133,12 @@
                     <div class="form-group form-check">
                         <input type="checkbox" class="form-check-input" id="chkAbreviacion">
                         <label class="form-check-label" for="chkAbreviacion">Habilitar</label>
+                    </div>
+                    <label for="sucNombre">Sucursal</label>
+                    <input type="text" class="form-control" id="sucNombre" name="sucNombre" aria-describedby="sucNombre" oninput="InputToUpper(this);" readonly />
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="chksucNombre">
+                        <label class="form-check-label" for="chksucNombre">Habilitar</label>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -304,6 +317,7 @@
 
             // Obtener el valor de la primera celda de la fila
             var valorCelda = fila.find('td:first').text();
+            var valorSucNombre = fila.find('td:eq(3)').text();
             var valorTexto = fila.find('td:eq(4)').text();
 
             // Realizar la acción deseada con el valor de la celda
@@ -312,6 +326,7 @@
 
             $("#consecutivo").attr({ "value": valorCelda });
             $("#abreviacion").attr({ "value": valorTexto.trim() });
+            $("#sucNombre").attr({ "value": valorSucNombre.trim() });
             $("#empId").attr({ "value": empId });
         });
 
@@ -319,6 +334,7 @@
             var empId = $("#empId").val();
             var consecutivo = $("#consecutivo").val();
             var abreviacion = $('#abreviacion').val();
+            var sucursal = $("#sucNombre").val();
 
             if (abreviacion.length <= 0) {
                 swal({
@@ -344,7 +360,7 @@
             }).then(
                 function (isConfirm) {
                     if (isConfirm) {
-                        location.href = '@Url.Action("GuardarAbreviacion", "FarmaciasSubNivelesVisualizar")?consecutivo=' + consecutivo + "&abreviacion=" + abreviacion + "&empId=" + empId;
+                        location.href = '@Url.Action("GuardarAbreviacion", "FarmaciasSubNivelesVisualizar")?consecutivo=' + consecutivo + "&abreviacion=" + abreviacion + "&sucursal=" + sucursal +  "&empId=" + empId;
                         documentos = null;
                     } else {
                         swal("¡Cancelado!", "No se pudo realizar la acción solicitada", "error");
@@ -353,11 +369,11 @@
             );
         }
 
-        // Obtener elementos del DOM usando jQuery
+        // Obtener elementos del DOM usando jQuery 1
         const $checkbox = $("#chkAliasCadena");
         const $editableText = $("#alias_cadena");
 
-        // Agregar un evento al checkbox para manejar los cambios
+        // Agregar un evento al checkbox para manejar los cambios 1
         $checkbox.on("change", function () {
             $editableText.prop("readonly", !$checkbox.is(":checked")); // Hacer el campo de texto de solo lectura o editable
             if ($checkbox.is(":checked")) {
@@ -374,6 +390,30 @@
             $editableText2.prop("readonly", !$checkbox2.is(":checked")); // Hacer el campo de texto de solo lectura o editable
             if ($checkbox2.is(":checked")) {
                 $editableText2.focus(); // Enfocar el campo de texto si el checkbox está marcado
+            }
+        });
+
+        // Obtener elementos del DOM usando jQuery 3
+        const $checkbox3 = $("#chkNotacion");
+        const $editableText3 = $("#notacion");
+
+        // Agregar un evento al checkbox para manejar los cambios 3
+        $checkbox3.on("change", function () {
+            $editableText3.prop("readonly", !$checkbox3.is(":checked")); // Hacer el campo de texto de solo lectura o editable
+            if ($checkbox3.is(":checked")) {
+                $editableText3.focus(); // Enfocar el campo de texto si el checkbox está marcado
+            }
+        });
+
+        // Obtener elementos del DOM usando jQuery 4
+        const $checkbox4 = $("#chksucNombre");
+        const $editableText4 = $("#sucNombre");
+
+        // Agregar un evento al checkbox para manejar los cambios 4
+        $checkbox4.on("change", function () {
+            $editableText4.prop("readonly", !$checkbox4.is(":checked")); // Hacer el campo de texto de solo lectura o editable
+            if ($checkbox4.is(":checked")) {
+                $editableText4.focus(); // Enfocar el campo de texto si el checkbox está marcado
             }
         });
 
@@ -432,15 +472,13 @@
         function validarCampos() {
             var form = document.getElementById("Form1");
             var aliasCadena = $("#alias_cadena").val();
-            var empId = $("#emp_id").val();
-            var id = $("#id").val();
 
             event.preventDefault();
 
             if (aliasCadena) {
                 swal({
                     title: "¿Desea confirmar la solicitud?",
-                    text: "¡Se procederá actualizar el alias de cadena",
+                    text: "¡Se procederá actualizar la información del encabezado!",
                     type: "warning",
                     showCancelButton: true,
                     cancelButtonText: "Cancelar",
@@ -452,7 +490,6 @@
                 }).then(
                     function (isConfirm) {
                         if (isConfirm) {
-                            @*location.href = '@Url.Action("Edit", "FarmaciasSubNivelesVisualizar")?emp_id=' + empId + "&id=" + id;*@
                             form.submit();
                         } else {
                             swal("¡Cancelado!", "No se pudo realizar la acción solicitada", "error");

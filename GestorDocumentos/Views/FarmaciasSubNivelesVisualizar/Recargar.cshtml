@@ -1,13 +1,14 @@
 ﻿@model GestorDocumentos.Models.Request.FarmaciasEncabezadoRequest
 @{
-    ViewBag.Title = "Filtrar Farmacias";
+    ViewBag.Title = "Recargar Farmacias";
 }
 
-@using (Html.BeginForm("Create", "FarmaciasSubNivelesVisualizar", FormMethod.Post, new { id = "Form1" }))
+
+@using (Html.BeginForm("Recargar", "FarmaciasSubNivelesVisualizar", FormMethod.Post, new { id = "Form1" }))
 {
     @Html.AntiForgeryToken()
     <div class="form-horizontal">
-        <h4 style="text-align: center; color: green;">Agregar Farmacias para visualización en sub niveles </h4>
+        <h4 style="text-align: center; color: green;">Recargar Información de Farmacias</h4>
         <div class="btn-group col-md-10">
             @Html.ActionLink("<< Volver encabezado de farmacias", "Index", null, new { @style = "color: Green" })
         </div>
@@ -17,34 +18,24 @@
         </div>
         <div class="btn-group col-md-10">
             <label for="id">Base de datos</label>
-            @Html.DropDownList("id", new SelectList(ViewBag.ListaFarmacias, "Value", "Text"), "---Select Detalle---", htmlAttributes: new { @class = "form-control btn btn-secondary dropdown-toggle" })
+            @Html.DropDownList("data", new SelectList(ViewBag.ListaFarmacias, "Value", "Text"), "---Select Detalle---", htmlAttributes: new { @class = "form-control btn btn-secondary dropdown-toggle" })
         </div>
         <hr />
         <input type="text" id="baseDatos" name="baseDatos" hidden />
         <input type="text" id="empId" name="empId" hidden />
+
         <div class="form-group col-md-10">
             <label for="empNombre">Empresa</label>
             <input type="text" class="form-control" id="empNombre" name="empNombre" aria-describedby="empNombreHelp" maxlength="255" oninput="InputToUpper(this);" readonly />
-            <small id="empNombreHelp" class="form-text text-muted">Nombre de la empresa.</small>
-        </div>
-        <div class="form-group col-md-10">
-            <label for="cadenaNombre">Cadena</label>
-            <input type="text" class="form-control" id="cadenaNombre" name="cadenaNombre" aria-describedby="cadenaNombreHelp" maxlength="255" oninput="InputToUpper(this);" readonly />
-            <small id="cadenaNombreHelp" class="form-text text-muted">Nombre de la cadena.</small>
-        </div>
-        <div class="form-group col-md-10">
-            <label for="aliasCadena">Alias de Cadena</label>
-            <input type="text" class="form-control" id="aliasCadena" name="aliasCadena" aria-describedby="aliasCadenaHelp" maxlength="255" oninput="InputToUpper(this);" required />
-            <small id="aliasCadenaHelp" class="form-text text-muted">Puede establecer un nombre corto para la cadena ejemplo: FARMACIAS KIELSA HN.</small>
-        </div>
-        <div class="form-group col-md-10">
-            <label for="aliasCadena">Abreviación</label>
-            <input type="text" class="form-control" id="abreviacion" name="abreviacion" aria-describedby="abreviacionHelp" maxlength="10" oninput="InputToUpper(this);" required />
-            <small id="abreviacionHelp" class="form-text text-muted">Aquí establezca la notación correspondiente a la farmacia ejemplo: Kielsa => K.</small>
         </div>
 
         <div class="form-group col-md-10">
-            <button type="submit" class="btn btn-primary" onclick="return validarCampos();">Agregar Farmacias</button>
+            <label for="notacion">Notación</label>
+            <input type="text" class="form-control" id="abreviacion" name="abreviacion" aria-describedby="abreviacionHelp" maxlength="5" oninput="InputToUpper(this);" readonly />
+        </div>
+
+        <div class="form-group col-md-10">
+            <button type="submit" class="btn btn-warning" onclick="return recargarInformacion();">Recargar Información</button> |
             <button type="reset" class="btn btn-secondary" onclick="return limpiarCampos();">Limpiar Controles</button>
         </div>
 
@@ -100,9 +91,28 @@
 }
 
 @section Scripts{
+    
     <script type="text/javascript">
 
-        $("#id").change(function () {
+        // Obtener elementos del DOM usando jQuery 2
+        const $checkbox = $("#chkNotacion");
+        const $editableText = $("#notacion");
+
+        // Agregar un evento al checkbox para manejar los cambios 2
+        $checkbox.on("change", function () {
+            $editableText.prop("readonly", !$checkbox.is(":checked")); // Hacer el campo de texto de solo lectura o editable
+            if ($checkbox.is(":checked")) {
+                $editableText.focus(); // Enfocar el campo de texto si el checkbox está marcado
+            }
+        });
+
+        function limpiarCampos() {
+            $('#baseDatos').attr({ "value": "" });
+            $('#empId').attr({ "value": "" });
+            $('#empNombre').attr({ "value": "" });
+        };
+
+        $("#data").change(function () {
             var bdName = $(this).find("option:selected").text();
 
             $('#errorDiv').hide();
@@ -111,14 +121,14 @@
             if (bdName == "---Select Detalle---") {
                 $('#empId').attr({ "value": "" });
                 $('#empNombre').attr({ "value": "" });
-                $('#cadenaNombre').attr({ "value": "" });
+                $('#baseDatos').attr({ "value": "" });
                 return false;
             }
 
             $('#baseDatos').attr({ "value": bdName });
 
             $.ajax({
-                url: '/FarmaciasSubNivelesVisualizar/GeMostrarData?bdName=' + bdName, // Reemplaza 'Controlador' con el nombre de tu controlador
+                url: '/FarmaciasSubNivelesVisualizar/GetRecargar?bdName=' + bdName, // Reemplaza 'Controlador' con el nombre de tu controlador
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
@@ -127,13 +137,13 @@
                         // 'data' contiene los valores del JSON devuelto
                         var empId = data[0].empId;
                         var empNombre = data[0].empNombre.toUpperCase();
-                        var cadenaNombre = data[0].cadenaNombre.toUpperCase();
+                        var notacion = data[0].notacion.toUpperCase();
                         var error = data[0].error;
 
                         // Puedes usar 'nombre' y 'edad' en tu código JavaScript aquí
                         $('#empId').attr({ "value": empId });
                         $('#empNombre').attr({ "value": empNombre });
-                        $('#cadenaNombre').attr({ "value": cadenaNombre });
+                        $('#abreviacion').attr({ "value": notacion });
 
                         if (error) {
                             $('#errorDiv').show();
@@ -141,22 +151,23 @@
                         }
 
                     } else {
-                        console.error("La respuesta JSON es undefined.");
+                        $('#error').text("La respuesta JSON es undefined.");
                     }
 
                 },
                 error: function () {
                     // Maneja los errores aquí
-                    console.error("Hubo un error en la solicitud AJAX.");
+                    $('#error').text("Hubo un error en la solicitud AJAX.");
                 }
             });
         });
 
-        function validarCampos() {
+        function recargarInformacion() {
             var form = document.getElementById("Form1");
             var empId = $("#empId").val();
-            var aliasCadena = $("#aliasCadena").val();
-            var abreviacion = $("#abreviacion").val();
+            var notacion = $("#abreviacion").val();
+
+            event.preventDefault();
 
             if (empId == "") {
                 swal({
@@ -168,30 +179,19 @@
                 return false;
             }
 
-            if (aliasCadena == "") {
+            if (notacion == "") {
                 swal({
                     title: "¡Error!",
-                    text: "¡El campo Alias de cadena no debe de estar vacio!",
+                    text: "¡La notación tiene que tener un valor!",
                     icon: "error", //built in icons: success, warning, error, info
                     timer: 5000, //timeOut for auto-close
                 });
                 return false;
             }
 
-            if (abreviacion == "") {
-                swal({
-                    title: "¡Error!",
-                    text: "¡El campo abreviación no debe de estar vacio!",
-                    icon: "error", //built in icons: success, warning, error, info
-                    timer: 5000, //timeOut for auto-close
-                });
-                return false;
-            }
-
-            event.preventDefault();
             swal({
                 title: "¿Desea confirmar la solicitud?",
-                text: "¡Se procederá a registrar información de la farmacia seleccionada!",
+                text: "¡Se procederá a recargar la información de la farmacia seleccionada!",
                 type: "warning",
                 showCancelButton: true,
                 cancelButtonText: "Cancelar",
@@ -203,21 +203,15 @@
             }).then(
                 function (isConfirm) {
                     if (isConfirm) {
-                        @* location.href = '@Url.Action("Edit", "FarmaciasSubNivelesVisualizar")?emp_id=' + empId + "&id=" + id;*@
+                         @*location.href = '@Url.Action("Recargar", "FarmaciasSubNivelesVisualizar")';*@
                         form.submit();
                     } else {
                         swal("¡Cancelado!", "No se pudo realizar la acción solicitada", "error");
                     }
                 }
             );
-        };
+        }
 
-        function limpiarCampos() {
-            $('#empId').attr({ "value": "" });
-            $('#empNombre').attr({ "value": "" });
-            $('#cadenaNombre').attr({ "value": "" });
-        };
-
-        window.history.replaceState({}, 'Create', '/FarmaciasSubNivelesVisualizar/Create');
-    </script>
+        window.history.replaceState({}, 'Recargar', '/FarmaciasSubNivelesVisualizar/Recargar');
+    </script>    
 }

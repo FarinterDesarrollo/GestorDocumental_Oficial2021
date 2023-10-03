@@ -795,6 +795,7 @@
     <Content Include="Views\FarmaciasSubNivelesVisualizar\Create.cshtml" />
     <Content Include="Views\FarmaciasSubNivelesVisualizar\Index.cshtml" />
     <Content Include="Views\FarmaciasSubNivelesVisualizar\Edit.cshtml" />
+    <Content Include="Views\FarmaciasSubNivelesVisualizar\Recargar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

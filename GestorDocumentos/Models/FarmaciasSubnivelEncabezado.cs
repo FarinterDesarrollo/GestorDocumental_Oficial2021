@@ -24,5 +24,8 @@ namespace GestorDocumentos.Models
         [Required]
         [StringLength(255)]
         public string alias_cadena { get; set; }
+        [Required]
+        [StringLength(5)]
+        public string notacion { get; set; }
     }
 }

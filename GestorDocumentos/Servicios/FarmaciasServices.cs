@@ -403,6 +403,56 @@ namespace GestorDocumentos.Servicios
             }
         }
 
+        public List<SucursalesAbreviacionLdcom> SucursalesAbreviacionRecarga(string database, string letra, DataTable dtDetalles)
+        {
+            try
+            {
+                _globales.query = $@"SELECT suc_id,suc_nombre, case when suc_id < 10 then '{letra}00' + cast(Suc_Id as varchar) when suc_id >= 10 and suc_id < 100 then '{letra}0' + cast(Suc_Id as varchar)
+                                     when suc_id >= 100 then '{letra}' + cast(Suc_Id as varchar)end  AS 'Abreviacion' FROM {database}.dbo.sucursal";
+                DataTable dtSucursal = new DataTable();
+                dtSucursal = _oSql.ddt(_globales.query, Conexion.siteplus);
+
+                List<SucursalesAbreviacionLdcom> modelSucursaAbreviacionlLd = new List<SucursalesAbreviacionLdcom>();
+
+                // Comparar los DataTables y encontrar registros nuevos en dataTableB
+                var newRecordsInB = dtDetalles.AsEnumerable()
+                    .Where(rowB => !dtSucursal.AsEnumerable()
+                        .Any(rowA => rowA.Field<short>("suc_id") == rowB.Field<short>("suc_id")))
+                    .ToList();
+
+                // Mostrar los registros nuevos en dataTableB
+                foreach (var newRow in newRecordsInB)
+                {
+                    modelSucursaAbreviacionlLd.Add(new SucursalesAbreviacionLdcom
+                    {
+                        suc_id = newRow.Field<short>("suc_id"),
+                        suc_nombre = newRow.Field<string>("suc_nombre"),
+                        abreviacion = newRow.Field<string>("abreviacion")
+                    });
+                }
+
+                if (modelSucursaAbreviacionlLd.Count == 0)
+                {
+                    modelSucursaAbreviacionlLd.Add(new SucursalesAbreviacionLdcom
+                    {
+                        error = "sin cambios"
+                    });
+                }
+
+                return modelSucursaAbreviacionlLd;
+            }
+            catch (Exception ex)
+            {
+                List<SucursalesAbreviacionLdcom> SucursalesAbreviacionLdcom = new List<SucursalesAbreviacionLdcom>();
+                Console.WriteLine(ex.Message);
+                SucursalesAbreviacionLdcom.Add(new SucursalesAbreviacionLdcom
+                {
+                    error = ex.Message
+                });
+                return SucursalesAbreviacionLdcom;
+            }
+        }
+
         public List<EmpresaLdcom> EmpresaLsConec(string database)
         {
             try
@@ -479,8 +529,8 @@ namespace GestorDocumentos.Servicios
                     return "EMP EXISTS";
                 }
 
-                _globales.query = $@"INSERT INTO dbo.farmacias_subnivel_encabezado(emp_id,emp_nombre,cadena_nombre,alias_cadena)
-                                     VALUES({model.empId},'{model.empNombre}','{model.cadenaNombre}','{model.aliasCadena}')";
+                _globales.query = $@"INSERT INTO dbo.farmacias_subnivel_encabezado(emp_id,emp_nombre,cadena_nombre,alias_cadena,notacion)
+                                     VALUES({model.empId},'{model.empNombre.Trim()}','{model.cadenaNombre.Trim()}','{model.aliasCadena.Trim()}','{model.abreviacion.Trim()}')";
                 _oSqlpg.save(_globales.query, Conexion.GD);
 
 
@@ -491,8 +541,60 @@ namespace GestorDocumentos.Servicios
                     return "FE NOT FOUND";
                 }
 
-                var sucursalesLdcom = SucursalesAbreviacionConec(model.baseDatos, model.abreviacion);
-                foreach(var item in sucursalesLdcom)
+                var sucursalesLdcom = SucursalesAbreviacionConec(model.baseDatos.Trim(), model.abreviacion.Trim());
+                if (sucursalesLdcom[0].error != "" && sucursalesLdcom[0].error != null)
+                {
+                    return "ERROR";
+                }
+
+                foreach (var item in sucursalesLdcom)
+                {
+                    _globales.query = $@"INSERT INTO dbo.farmacias_subnivel_detalle(fe_id,suc_id,suc_nombre,abreviacion)
+                                         VALUES({feId},{item.suc_id},'{item.suc_nombre}','{item.abreviacion}')";
+                    _oSqlpg.save(_globales.query, Conexion.GD);
+                }
+
+                return "OK";
+            }
+            catch(Exception ex)
+            {
+                return "ERROR";
+            }
+        }
+
+        public string RecargarInformacionFarmacias(FarmaciasEncabezadoRequest model)
+        {
+            try
+            {
+                _globales.query = $"SELECT * FROM dbo.farmacias_subnivel_encabezado WHERE emp_id={model.empId}";
+                DataTable dtEncabezado = new DataTable();
+                dtEncabezado = _oSqlpg.ddt(_globales.query, Conexion.GD);
+                if (dtEncabezado.Rows.Count == 0)
+                {
+                    return "EMP NOT EXISTS";
+                }
+
+                int feId = Convert.ToInt32(dtEncabezado.Rows[0]["id"]);
+
+                DataTable dtDetalle = new DataTable();
+                _globales.query = $"select * from dbo.farmacias_subnivel_detalle where fe_id={feId}";
+                dtDetalle = _oSqlpg.ddt(_globales.query, Conexion.GD);
+
+
+                var sucursalesLdcom = SucursalesAbreviacionRecarga(model.baseDatos, model.abreviacion, dtDetalle);
+                if(sucursalesLdcom[0].error != "" && sucursalesLdcom[0].error != null)
+                {
+                    if(sucursalesLdcom[0].error == "sin cambios")
+                    {
+                        return "SIN CAMBIOS";
+                    }
+                    else
+                    {
+                        return "ERROR";
+                    }
+                }
+                
+                foreach (var item in sucursalesLdcom)
                 {
                     _globales.query = $@"INSERT INTO dbo.farmacias_subnivel_detalle(fe_id,suc_id,suc_nombre,abreviacion)
                                          VALUES({feId},{item.suc_id},'{item.suc_nombre}','{item.abreviacion}')";

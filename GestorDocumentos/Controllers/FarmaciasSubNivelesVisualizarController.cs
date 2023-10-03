@@ -10,6 +10,7 @@ using GestorDocumentos.Models.Request;
 using GestorDocumentos.Models.Response;
 using GestorDocumentos.Models;
 using OfficeOpenXml;
+using Newtonsoft.Json.Linq;
 
 namespace GestorDocumentos.Controllers
 {
@@ -55,6 +56,10 @@ namespace GestorDocumentos.Controllers
             else if (mensajeTipo == "error")
             {
                 ViewBag.Error = mensaje;
+            }
+            else
+            {
+                ViewBag.Aviso = mensaje;
             }
 
             return View(model);
@@ -210,6 +215,7 @@ namespace GestorDocumentos.Controllers
                     me.emp_nombre = item.Field<string>("emp_nombre");
                     me.cadena_nombre = item.Field<string>("cadena_nombre");
                     me.alias_cadena = item.Field<string>("alias_cadena");
+                    me.notacion = item.Field<string>("notacion");
                 }
             }
 
@@ -279,20 +285,56 @@ namespace GestorDocumentos.Controllers
                     return RedirectToAction("Edit", "FarmaciasSubNivelesVisualizar", new { mensaje = mensaje, mensajeTipo = mensajeTipo, empId = emp_id });
                 }
 
-                globales.query = $"update dbo.farmacias_subnivel_encabezado set alias_cadena='{model.alias_cadena}' where id={id} and emp_id={emp_id}";
+                JObject obj = new JObject();
+                if(model.alias_cadena != null && model.alias_cadena != "")
+                {
+                    obj.Add("alias_cadena", $"'{model.alias_cadena}'");
+                }
+
+                if (model.notacion != null && model.notacion != "")
+                {
+                    obj.Add("notacion", $"'{model.notacion}'");
+                }
+
+                string campos = "";
+                string elementos = "";
+                int i = 0;
+
+                foreach (var reg in obj)
+                {
+                    i += 1;
+
+                    if (i == 1)
+                    {
+                        campos = reg.Key + "=" + reg.Value + ",";
+                    }
+                    else
+                    {
+                        elementos = reg.Key + "=" + reg.Value + ",";
+                        campos = campos + elementos;
+                    }
+                }
+
+                int indice = campos.LastIndexOf(",");
+                campos = campos.Substring(0, indice);
+
+                globales.query = $@"update dbo.farmacias_subnivel_encabezado set {campos} where id={id} and emp_id={emp_id}";
                 sqlpg.save(globales.query, conexion.Conectar());
 
                 mensajeTipo = "exito";
                 mensaje = "Encabezado modificado satisfactoriamente.";
                 return RedirectToAction("Edit", "FarmaciasSubNivelesVisualizar", new { mensaje = mensaje, mensajeTipo = mensajeTipo, empId = emp_id });
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                string mensaje = ""; string mensajeTipo = "";
+                mensajeTipo = "error";
+                mensaje = ex.Message;
+                return RedirectToAction("Edit", "FarmaciasSubNivelesVisualizar", new { mensaje = mensaje, mensajeTipo = mensajeTipo, empId = emp_id });
             }
         }
 
-        public ActionResult GuardarAbreviacion(short empId, int consecutivo, string abreviacion)
+        public ActionResult GuardarAbreviacion(short empId, int consecutivo, string abreviacion, string sucursal)
         {
             try
             {
@@ -300,8 +342,43 @@ namespace GestorDocumentos.Controllers
 
                 if (consecutivo != 0)
                 {
-                    abreviacion = abreviacion.Trim();
-                    globales.query = $"UPDATE dbo.farmacias_subnivel_detalle SET abreviacion='{abreviacion}' WHERE consecutivo={consecutivo}";
+                    JObject obj = new JObject();
+                    if (abreviacion != null && abreviacion != "")
+                    {
+                        abreviacion = abreviacion.Trim();
+                        obj.Add("abreviacion", $"'{abreviacion}'");
+                    }
+
+                    if (sucursal != null && sucursal != "")
+                    {
+                        sucursal = sucursal.Trim();
+                        obj.Add("suc_nombre", $"'{sucursal}'");
+                    }
+
+                    string campos = "";
+                    string elementos = "";
+                    int i = 0;
+
+                    foreach (var reg in obj)
+                    {
+                        i += 1;
+
+                        if (i == 1)
+                        {
+                            campos = reg.Key + "=" + reg.Value + ",";
+                        }
+                        else
+                        {
+                            elementos = reg.Key + "=" + reg.Value + ",";
+                            campos = campos + elementos;
+                        }
+                    }
+
+                    int indice = campos.LastIndexOf(",");
+                    campos = campos.Substring(0, indice);
+
+
+                    globales.query = $"UPDATE dbo.farmacias_subnivel_detalle SET {campos} WHERE consecutivo={consecutivo}";
                     sqlpg.save(globales.query, conexion.Conectar());
 
                     mensajeTipo = "exito";
@@ -322,6 +399,134 @@ namespace GestorDocumentos.Controllers
                 mensajeTipo = "error";
                 mensaje = ex.Message;
                 return RedirectToAction("Edit", "FarmaciasSubNivelesVisualizar", new { mensaje = mensaje, mensajeTipo = mensajeTipo, empId = empId });
+            }
+        }
+
+        public ActionResult Recargar(string mensaje, string mensajeTipo)
+        {
+            try
+            {
+                FarmaciasEncabezadoRequest model = new FarmaciasEncabezadoRequest();
+                List<DabaBaseLdcom> bd = new List<DabaBaseLdcom>();
+                bd = farmaciasService.BasedeDatosConec();
+                ViewBag.ListaFarmacias = new SelectList(bd.OrderBy(x => x.id), "id", "name");
+
+                if (mensajeTipo == "exito")
+                {
+                    ViewBag.Success = mensaje;
+                }
+                else if (mensajeTipo == "error")
+                {
+                    ViewBag.Error = mensaje;
+                }
+                else
+                {
+                    ViewBag.Aviso = mensaje;
+                }
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                FarmaciasSubnivelEncabezado model = new FarmaciasSubnivelEncabezado();
+                ViewBag.Error = ex.Message;
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Recargar(FarmaciasEncabezadoRequest values)
+        {
+            try
+            {
+                string mensaje = ""; string mensajeTipo = "";
+                string recargar = farmaciasService.RecargarInformacionFarmacias(values);
+                if (recargar == "OK")
+                {
+                    mensajeTipo = "exito";
+                    mensaje = "Farmacias registradas satisfactoriamente.";
+                }
+                else if (recargar == "EMP NOT EXISTS")
+                {
+                    mensajeTipo = "aviso";
+                    mensaje = $"La empresa aun no esta {values.empNombre} registrada.";
+                }
+                else if(recargar == "SIN CAMBIOS")
+                {
+                    mensajeTipo = "aviso";
+                    mensaje = $"No detecto ningun cambio para {values.empNombre} a nivel de LDCOM.";
+                }
+                else
+                {
+                    mensajeTipo = "error";
+                    mensaje = "Se genero un error interno, informar al desarrollador.";
+                }
+
+                return RedirectToAction("Recargar", "FarmaciasSubNivelesVisualizar", new { mensaje = mensaje, mensajeTipo = mensajeTipo });
+            }
+            catch(Exception ex)
+            {
+                string mensaje = ""; string mensajeTipo = "";
+                mensajeTipo = "error";
+                mensaje = ex.Message;
+                return RedirectToAction("Recargar", "FarmaciasSubNivelesVisualizar", new { mensaje = mensaje, mensajeTipo = mensajeTipo });
+            }
+        }
+
+        public JsonResult GetRecargar(string bdName)
+        {
+            try
+            {
+                List<EmpXCadenaResponse> empXcadenaResponse = new List<EmpXCadenaResponse>();
+                List<ErrorResponse> errorResponse = new List<ErrorResponse>();
+
+                if (bdName != null && bdName != "")
+                {
+                    var empresa = farmaciasService.EmpresaLsConec(bdName);
+                    if (empresa[0].error != null)
+                    {
+                        errorResponse.Add(new ErrorResponse
+                        {
+                            error = empresa[0].error
+                        });
+
+                        return Json(errorResponse, JsonRequestBehavior.AllowGet);
+                    }
+
+                    foreach (var item in empresa)
+                    {
+                        globales.query = $"select notacion from dbo.farmacias_subnivel_encabezado where emp_id={item.emp_id}";
+                        string notacion = sqlpg.get(globales.query, conexion.Conectar());
+
+                        empXcadenaResponse.Add(new EmpXCadenaResponse
+                        {
+                            empId = item.emp_id,
+                            empNombre = item.emp_nombre,
+                            notacion = notacion
+                        });
+                    }
+
+                    return Json(empXcadenaResponse, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    errorResponse.Add(new ErrorResponse
+                    {
+                        error = "Objeto vacio."
+                    });
+
+                    return Json(errorResponse, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch(Exception ex)
+            {
+                List<ErrorResponse> errorResponse = new List<ErrorResponse>();
+                Console.WriteLine(ex.Message);
+                errorResponse.Add(new ErrorResponse
+                {
+                    error = ex.Message
+                });
+                return Json(errorResponse, JsonRequestBehavior.AllowGet);
             }
         }
 
