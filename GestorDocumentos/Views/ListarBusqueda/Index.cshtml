@@ -17,6 +17,9 @@
             <thead>
                 <tr>
                     <th>
+                        <label style="font-weight:bold"> Id</label>
+                    </th>
+                    <th>
                         <label style="font-weight:bold"> Área</label>
                     </th>
                     <th>
@@ -44,33 +47,36 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                <tr>
-                    <td>
-                        @item.Areas.Descripcion
-                    </td>
-                    <td>
-                        @item.ConfCarpetaEncabezado.Descripcion
+                    <tr>
+                        <td>
+                            @item.Id
+                        </td>
+                        <td>
+                            @item.Areas.Descripcion
+                        </td>
+                        <td>
+                            @item.ConfCarpetaEncabezado.Descripcion
 
-                    </td>
-                    <td>
-                        @item.llaveUnica
-                    </td>
-                    <td>
-                        @item.Nombre_Ori
-                    </td>
-                    <td>
-                        @item.Nombre_Des
-                    </td>
-                    <td>
-                        @item.FechaRegistro
-                    </td>
-                    <td>
-                        @item.FechaActualizacion
-                    </td>
-                    <td>
-                        @Html.ActionLink("Ver Documento", "Imagen", new { id = item.Id })
-                    </td>
-                </tr>
+                        </td>
+                        <td>
+                            @item.llaveUnica
+                        </td>
+                        <td>
+                            @item.Nombre_Ori
+                        </td>
+                        <td>
+                            @item.Nombre_Des
+                        </td>
+                        <td>
+                            @item.FechaRegistro
+                        </td>
+                        <td>
+                            @item.FechaActualizacion
+                        </td>
+                        <td>
+                            @Html.ActionLink("Ver Documento", "Imagen", new { id = item.Id })
+                        </td>
+                    </tr>
                 }
 
             </tbody>
@@ -80,14 +86,20 @@
 
 }
 @*<nav aria-label="Page navigation example">
-    <ul class="pagination"></ul>
-</nav>*@
+        <ul class="pagination"></ul>
+    </nav>*@
 <div>
     @Html.ActionLink("Página Anterior", "Index", "VisualizacionConFiltros")
 </div>
 
 @section Scripts
 {
+    <!-- Agrega las bibliotecas y hojas de estilo necesarias -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.print.min.js"></script>
+
     <script type="text/javascript">
         $('th').click(function () {
             var table = $(this).parents('table').eq(0)
@@ -159,41 +171,88 @@
                     "infoFiltered": "Filtrado de _MAX_ entradas totales",
                     "lengthMenu": "Mostrar _MENU_ Entradas",
                     "search": "Filtrar"
-                }
-                 //,
+                },
+                dom: 'Blfrtip',
+                order: [[0, 'asc']],
+                buttons: [
+                    /*'print', 'copy', 'excel', 'pdf'*/
+                    {
+                        extend: 'copy',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="far fa-file-copy"></i> Copiar',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        }
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="far fa-file-excel" title="Exportar a excel"></i> Excel',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="far fa-file-pdf" title= "Guardar como PDF"></i> Pdf',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="fas fa-file-csv" title= "Guardar como CSV"></i> CSV',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="fas fa-print"></i> Imprimir tabla',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        }
+                    }
+                ]
+                //,
                 //"columnDefs": [{
-                   // targets: 5, render: function (data) {
-                     //   return moment(data).format('DD/MM/YYYY hh:mm:ss A');
-                    //}
+                // targets: 5, render: function (data) {
+                //   return moment(data).format('DD/MM/YYYY hh:mm:ss A');
+                //}
                 //}, {
-                  //  targets: 6, render: function (data) {
-                    //    return moment(data).format('DD/MM/YYYY hh:mm:ss A');
-                    //}
-               // }]
+                //  targets: 6, render: function (data) {
+                //    return moment(data).format('DD/MM/YYYY hh:mm:ss A');
+                //}
+                // }]
             });
         });
 
     </script>
 }
 
-    <style>
-        table tr th {
-            cursor: pointer;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
+<style>
+    table tr th {
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
 
-        /*.sorting {
+    /*.sorting {
             background-color: #D4D4D4;
         }*/
 
-        .asc:after {
-            content: ' ↑';
-        }
+    .asc:after {
+        content: ' ↑';
+    }
 
-        .desc:after {
-            content: " ↓";
-        }
-    </style>
+    .desc:after {
+        content: " ↓";
+    }
+</style>
