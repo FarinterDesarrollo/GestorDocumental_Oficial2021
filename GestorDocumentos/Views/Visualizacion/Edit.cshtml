@@ -187,10 +187,11 @@
                 label.innerText = fecha.Descripcion;
                 let input = document.createElement('input');
                 input.setAttribute('type', 'date');
-                input.setAttribute('class', 'form-control');
+                input.setAttribute('class', 'datepicker');
                 input.setAttribute('name', 'dateInput');
                 input.setAttribute('id', 'dateInput');
                 input.setAttribute('required', true);
+                input.setAttribute('onblur', 'return myFunction();');
                 input.setAttribute('onkeydown', 'return false');  
                 div.appendChild(label);
                 div.appendChild(input);
@@ -299,7 +300,37 @@
 @section Scripts{
     <script type="text/javascript">
         //Agregado el 23/09/2020:
+        // ******** Modificación 20/09/2023: Validación de invalidar busqueda posterior a la fecha actual ********
+        function myFunction() {
+            /*alert("Hola");*/
+            var myDate = $('#dateInput');
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1;
+            var yyyy = today.getFullYear();
+            if (dd < 10)
+                dd = '0' + dd;
 
+            if (mm < 10)
+                mm = '0' + mm;
+
+            today = yyyy + '-' + mm + '-' + dd;
+            myDate.attr("max", today);
+
+            var date = myDate.val();
+            if (Date.parse(date)) {
+                if (date > today) {
+                    /*alert('La fecha no puede ser mayor a la actual');*/
+                    swal({
+                        title: "¡Error!",
+                        text: "¡La fecha no puede ser mayor a la actual!",
+                        icon: "error", //built in icons: success, warning, error, info
+                        timer: 5000, //timeOut for auto-close
+                    });
+                    myDate.val("");
+                }
+            }
+        }
     //****************************************************************
     </script>
 }
