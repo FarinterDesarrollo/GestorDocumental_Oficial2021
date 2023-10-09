@@ -190,7 +190,7 @@ namespace GestorDocumentos.Controllers
                 int numero = Efarmacia[0];
                 //var subnivel = db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && (ms.Descripcion.Contains("K0") || ms.Descripcion.Contains("K1") || ms.Descripcion.Contains("K2") || ms.Descripcion.Contains("K5") || ms.Descripcion.Contains("K6"))).Union(db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && (ms.Descripcion.Contains("H0") || ms.Descripcion.Contains("H1") || ms.Descripcion.Contains("H2") || ms.Descripcion.Contains("H5") || ms.Descripcion.Contains("H6")))).ToList();
                 var subnivel = _services.MS_Farmacias_PermisosLista(id, numero, 1);
-
+                
                 if (subnivel.Count > 0)
                 {
                     //mn = db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && !ms.Descripcion.Contains("K0") && !ms.Descripcion.Contains("K1") && !ms.Descripcion.Contains("K2") && !ms.Descripcion.Contains("K5") && !ms.Descripcion.Contains("K6") && !ms.Descripcion.Contains("H0") && !ms.Descripcion.Contains("H1") && !ms.Descripcion.Contains("H2") && !ms.Descripcion.Contains("H5") && !ms.Descripcion.Contains("H6")).Union(db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && ms.Id == numero)); //original 20211112

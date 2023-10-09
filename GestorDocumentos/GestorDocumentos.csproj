@@ -50,6 +50,21 @@
     <Reference Include="Bootstrap.Pagination, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Bootstrap.Pagination.1.0.14\lib\net451\Bootstrap.Pagination.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus, Version=6.2.9.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.6.2.9\lib\net35\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.Interfaces, Version=6.1.1.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.Interfaces.6.1.1\lib\net35\EPPlus.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.System.Drawing, Version=6.1.1.0, Culture=neutral, PublicKeyToken=2308d35469c9bac0, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.System.Drawing.6.1.1\lib\net35\EPPlus.System.Drawing.dll</HintPath>
+    </Reference>
     <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
       <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net45\ExcelDataReader.dll</HintPath>
     </Reference>
@@ -75,6 +90,8 @@
     <Reference Include="Npgsql.EntityFramework, Version=2.2.7.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <HintPath>..\packages\Npgsql.EntityFramework.2.2.7\lib\net45\Npgsql.EntityFramework.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
@@ -92,6 +109,7 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.6.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Text.Encodings.Web, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Encodings.Web.4.6.0\lib\netstandard2.0\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
@@ -162,14 +180,9 @@
       <Private>True</Private>
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.2\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
@@ -223,6 +236,7 @@
     <Compile Include="Clases\Conexion.cs" />
     <Compile Include="Clases\CsvExport.cs" />
     <Compile Include="Clases\Globales.cs" />
+    <Compile Include="Clases\Sql.cs" />
     <Compile Include="Clases\Sqlpg.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AreasController.cs" />
@@ -231,6 +245,7 @@
     <Compile Include="Controllers\DocumentoCargaMasivaController.cs" />
     <Compile Include="Controllers\Documento_DetalleController.cs" />
     <Compile Include="Controllers\EditarUsuarioController.cs" />
+    <Compile Include="Controllers\FarmaciasSubNivelesVisualizarController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ListarBusquedaController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -250,32 +265,44 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\202001072012564_001.cs" />
-    <Compile Include="MigrationsIdentity\202001072012564_001.Designer.cs">
+    <Compile Include="MigrationsIdentity\202001072012564_001.designer.cs">
       <DependentUpon>202001072012564_001.cs</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\202001142350010_002.cs" />
-    <Compile Include="MigrationsIdentity\202001142350010_002.Designer.cs">
+    <Compile Include="MigrationsIdentity\202001142350010_002.designer.cs">
       <DependentUpon>202001142350010_002.cs</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\202001151604218_003.cs" />
-    <Compile Include="MigrationsIdentity\202001151604218_003.Designer.cs">
+    <Compile Include="MigrationsIdentity\202001151604218_003.designer.cs">
       <DependentUpon>202001151604218_003.cs</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\202001152207483_004.cs" />
-    <Compile Include="MigrationsIdentity\202001152207483_004.Designer.cs">
+    <Compile Include="MigrationsIdentity\202001152207483_004.designer.cs">
       <DependentUpon>202001152207483_004.cs</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\202003312040119_005.cs" />
-    <Compile Include="MigrationsIdentity\202003312040119_005.Designer.cs">
+    <Compile Include="MigrationsIdentity\202003312040119_005.designer.cs">
       <DependentUpon>202003312040119_005.cs</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\202004022238269_006.cs" />
-    <Compile Include="MigrationsIdentity\202004022238269_006.Designer.cs">
+    <Compile Include="MigrationsIdentity\202004022238269_006.designer.cs">
       <DependentUpon>202004022238269_006.cs</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\202004141620591_007.cs" />
-    <Compile Include="MigrationsIdentity\202004141620591_007.Designer.cs">
+    <Compile Include="MigrationsIdentity\202004141620591_007.designer.cs">
       <DependentUpon>202004141620591_007.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MigrationsIdentity\202309211401227_008.cs" />
+    <Compile Include="MigrationsIdentity\202309211401227_008.Designer.cs">
+      <DependentUpon>202309211401227_008.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MigrationsIdentity\202309211500540_009.cs" />
+    <Compile Include="MigrationsIdentity\202309211500540_009.Designer.cs">
+      <DependentUpon>202309211500540_009.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MigrationsIdentity\202309260053233_010.cs" />
+    <Compile Include="MigrationsIdentity\202309260053233_010.Designer.cs">
+      <DependentUpon>202309260053233_010.cs</DependentUpon>
     </Compile>
     <Compile Include="MigrationsIdentity\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -287,6 +314,8 @@
     <Compile Include="Models\DocDetPermisos.cs" />
     <Compile Include="Models\Documento_Detalle.cs" />
     <Compile Include="Models\EditarUsuario.cs" />
+    <Compile Include="Models\FarmaciasSubnivelDetalle.cs" />
+    <Compile Include="Models\FarmaciasSubnivelEncabezado.cs" />
     <Compile Include="Models\Helper.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ListadeSubniveles.cs" />
@@ -296,12 +325,22 @@
     <Compile Include="Models\ModelCollection.cs" />
     <Compile Include="Models\Pantallas.cs" />
     <Compile Include="Models\Person.cs" />
+    <Compile Include="Models\Request\CadenaLdcom.cs" />
+    <Compile Include="Models\Request\DabaBaseLdcom.cs" />
+    <Compile Include="Models\Request\EmpresaLdcom.cs" />
+    <Compile Include="Models\Request\FarmaciasEncabezadoRequest.cs" />
+    <Compile Include="Models\Request\SucursalesLdcom.cs" />
+    <Compile Include="Models\Request\TipoRolResquest.cs" />
+    <Compile Include="Models\Response\EmpXCadenaResponse.cs" />
+    <Compile Include="Models\Response\FarmaciasEncabezadoResponse.cs" />
     <Compile Include="Models\RoleViewModels.cs" />
     <Compile Include="Models\RoleXArea.cs" />
     <Compile Include="Models\RoleXAreaXCarpeta.cs" />
     <Compile Include="Models\RoleXAreaXCarpetasXSubniveles.cs" />
     <Compile Include="Models\RolPermisos.cs" />
+    <Compile Include="Models\RolxTipo.cs" />
     <Compile Include="Models\SubirArchivo.cs" />
+    <Compile Include="Models\TipoRol.cs" />
     <Compile Include="Models\Tipo_Campo.cs" />
     <Compile Include="Models\validaciones.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -588,6 +627,7 @@
     <Content Include="Content\bootstrap\variables.less" />
     <Content Include="Content\bootstrap\mixins.less" />
     <None Include="Properties\PublishProfiles\IISPRD-GD.pubxml" />
+    <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <None Include="Properties\PublishProfiles\IISQA-GD.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\Global.js" />
@@ -751,6 +791,11 @@
     <Content Include="Views\Account\Register2.cshtml" />
     <Content Include="Views\Sweet\Alert.cshtml" />
     <Content Include="Views\Role\Carga_Masiva_Roles.cshtml" />
+    <Content Include="Views\Role\ViewRolesxTipo.cshtml" />
+    <Content Include="Views\FarmaciasSubNivelesVisualizar\Create.cshtml" />
+    <Content Include="Views\FarmaciasSubNivelesVisualizar\Index.cshtml" />
+    <Content Include="Views\FarmaciasSubNivelesVisualizar\Edit.cshtml" />
+    <Content Include="Views\FarmaciasSubNivelesVisualizar\Recargar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -785,6 +830,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MigrationsIdentity\202004141620591_007.resx">
       <DependentUpon>202004141620591_007.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MigrationsIdentity\202309211401227_008.resx">
+      <DependentUpon>202309211401227_008.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MigrationsIdentity\202309211500540_009.resx">
+      <DependentUpon>202309211500540_009.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MigrationsIdentity\202309260053233_010.resx">
+      <DependentUpon>202309260053233_010.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

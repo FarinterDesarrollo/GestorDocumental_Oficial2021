@@ -6,6 +6,8 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity.Owin;
 using GestorDocumentos.Archivos;
+using GestorDocumentos.Servicios;
+
 namespace GestorDocumentos.Controllers
 {
     [Authorize]
@@ -17,7 +19,7 @@ namespace GestorDocumentos.Controllers
         private ApplicationUserManager _userManager;
         private ApplicationRoleManager _roleManager;
         // GET: Visualizacion
-
+        private readonly FarmaciasServices _services = new FarmaciasServices();
 
         public VisualizacionController()
         {
@@ -78,6 +80,15 @@ namespace GestorDocumentos.Controllers
                 Session["llaveUnica"] = "";
             }
 
+            if(Nombre != null)
+            {
+                bool isNumber = int.TryParse(Nombre, out int number2);
+                if (isNumber == false)
+                {
+                    Nombre = Nombre.ToLower();
+                }
+            }
+
             if (!String.IsNullOrEmpty(Nombre))
             {
                 
@@ -105,11 +116,12 @@ namespace GestorDocumentos.Controllers
                         GTNIC = true;
                     }
                 }
-                
+
                 // *************************************************
+                string tipo = _services.VerificarTipoRol(rname);
 
                 //var documentos_Detalle;
-                if (areasxcarpetas.Count == 0)
+                if (areasxcarpetas.Count == 0 || tipo == "A")
                 {
                     var areasxrole = (from a in db.Areas
                                       join rxa in db.RoleXAreas on a.Id equals rxa.AreaId
@@ -138,7 +150,7 @@ namespace GestorDocumentos.Controllers
                                       ).Distinct().ToList();
 
                         List<DocDetPermisos> documentos_Detalle;
-                        string busqueda = Nombre.ToLower();
+                        string busqueda = Nombre;
 
                         documentos_Detalle = (from s in areasxcarpetasxsubniveles
                                               select new DocDetPermisos
@@ -161,7 +173,7 @@ namespace GestorDocumentos.Controllers
                     else
                     {
                         List<DocDetPermisos> documentos_Detalle;
-                        string busqueda = Nombre.ToLower();
+                        string busqueda = Nombre;
 
                         documentos_Detalle = (from s in areasxrole
                                               select new DocDetPermisos
@@ -186,7 +198,7 @@ namespace GestorDocumentos.Controllers
                 else
                 {
                     List<DocDetPermisos> documentos_Detalle;
-                    string busqueda = Nombre.ToLower();
+                    string busqueda = Nombre;
                     documentos_Detalle = (from s in areasxcarpetas
                                           select new DocDetPermisos
                                           {
@@ -558,8 +570,15 @@ namespace GestorDocumentos.Controllers
                 documento_Detalle.Nombre_Ori = nombre;
                 documento_Detalle.Nombre_Des = nombrenuevo;
                 //Agregado:14042020
-                var dateQuery = db.Database.SqlQuery<string>("select TO_CHAR(now(), 'DD/MM/YYYY HH24:MI:SS')");
-                DateTime serverDate = Convert.ToDateTime(dateQuery.AsEnumerable().First());
+                //var dateQuery = db.Database.SqlQuery<string>("select TO_CHAR(now(), 'DD/MM/YYYY HH24:MI:SS')");
+                //DateTime serverDate = Convert.ToDateTime(dateQuery.AsEnumerable().First());
+
+                // *** Modificado el 03/10/2023 ***
+                DateTime fechaserver = DateTime.Now;
+                string sfechaserver = fechaserver.ToString("dd/MM/yyyy HH:mm:ss");
+                DateTime serverDate = Convert.ToDateTime(sfechaserver);
+                //*** Fin Modificación ***
+
                 //DateTime FechaA = DateTime.Today;
                 DateTime FechaA = serverDate;
                 DateTime FechaR = context.Documentos_Detalle.FirstOrDefault(i => i.Id == documento_Detalle.Id).FechaRegistro;

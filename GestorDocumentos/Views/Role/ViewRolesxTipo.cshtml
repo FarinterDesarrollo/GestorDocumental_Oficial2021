@@ -1,0 +1,388 @@
+﻿@model IEnumerable<GestorDocumentos.Models.Request.RolxTipoRequest>
+@*@model GestorDocumentos.Models.Request.RolxTipoRequest*@
+
+@{
+    ViewBag.Title = "Permisos Fast Track";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link" href="#tab-table1" data-toggle="tab" style="color: blue">Roles sin Autorizar</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#tab-table2" data-toggle="tab" style="color: red">Roles Autorizados</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <!--Tabla1-->
+        <div class="tab-pane active" id="tab-table1">
+            <table class="table table-responsive-lg" id="tabla1">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.nombre)
+                        </th>
+                        <th>@Html.Label("Seleccionar")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        if (item.tipo != "A")
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.nombre)
+                                </td>
+                                <td>
+                                    @Html.CheckBox("checks1[]", false, new { value = item.nombre, @class = "select-checkbox" })
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+            <div class="form-actions no-color">
+                <input type="submit" id="Autorizar" value="Otorgar Permiso" title="Otorgar Permiso" class="btn btn-success"
+                       onclick="return SeleccionCheck1();" />
+            </div>
+
+            <!-- Elemento oculto para almacenar las selecciones -->
+            @Html.Hidden("arr1")
+            <div hidden>Ids seleccionados 1: <span id="str1" hidden></span></div>
+        </div>
+
+        <!--Tabla2-->
+        <div class="tab-pane" id="tab-table2">
+            <table class="table table-responsive-lg" id="tabla2">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.nombre)
+                        </th>
+                        <th>@Html.Label("Seleccionar")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        if (item.tipo == "A")
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.nombre)
+                                </td>
+                                <td>
+                                    @Html.CheckBox("checks2[]", false, new { value = item.nombre, @class = "select-checkbox" })
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+            <div class="form-actions no-color">
+                <input type="submit" id="Desautorizar" value="Quitar Permiso" title="Quitar Permiso" class="btn btn-danger"
+                       onclick="return SeleccionCheck2();" />
+            </div>
+
+            <!-- Elemento oculto para almacenar las selecciones -->
+            @Html.Hidden("arr2")
+            <div hidden>Ids seleccionados 2: <span id="str2" hidden></span></div>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(ViewBag.Mensaje))
+{
+    <script>
+        let responseOK = '@ViewBag.Mensaje';
+        swal({
+            title: "¡Éxito!",
+            text: responseOK,
+            icon: "success", //built in icons: success, warning, error, info
+            timer: 5000, //timeOut for auto-close
+        });
+    </script>
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.Mensaje))
+{
+    <script>
+        let responseOK = '@ViewBag.Mensaje';
+        swal({
+            title: "¡Éxito!",
+            text: responseOK,
+            icon: "success", //built in icons: success, warning, error, info
+            timer: 5000, //timeOut for auto-close
+        });
+    </script>
+}
+
+@section Scripts{
+    <!-- Agrega las bibliotecas y hojas de estilo necesarias -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.1.1/css/buttons.dataTables.min.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.1.1/js/buttons.print.min.js"></script>
+
+    <script type="text/javascript">
+
+        $(Document).ready(function () {
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+            });
+
+            $('#tabla1').DataTable({
+                "paging": true,
+                "ordering": true,
+                "info": true,
+                "pagingType": "full_numbers",
+                "searching": true,
+                "pageLength": 10,
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                //Lenguaje:
+                "language": {
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "previous": "Anterior",
+                        "next": "Siguiente",
+                    },
+                    "info": "Mostrar Entradas de _START_ a _TOTAL_",
+                    "infoEmpty": "Total de Entradas 0",
+                    "infoFiltered": "Filtrado de _MAX_ entradas totales",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "search": "Filtrar"
+                },
+                dom: 'Blfrtip',
+                select: {
+                    style: 'multi',
+                    /*selector: 'td:first-child'*/
+                }, order: [[0, 'asc']],
+                buttons: [
+                    {
+                        extend: 'excel',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="far fa-file-excel"></i> Exportar a excel',
+                        exportOptions: {
+                            columns: [0]
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="far fa-file-pdf" title= "Guardar como PDF"></i> Pdf',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: [0]
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="fas fa-file-csv" title= "Guardar como CSV"></i> CSV',
+                        exportOptions: {
+                            columns: [0]
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="fas fa-print"></i> Imprimir tabla',
+                        exportOptions: {
+                            columns: [0]
+                        }
+                    }
+                ]
+            });
+
+            $('#tabla2').DataTable({
+                "paging": true,
+                "ordering": true,
+                "info": true,
+                "pagingType": "full_numbers",
+                "searching": true,
+                "pageLength": 10,
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                //Lenguaje:
+                "language": {
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "previous": "Anterior",
+                        "next": "Siguiente",
+                    },
+                    "info": "Mostrar Entradas de _START_ a _TOTAL_",
+                    "infoEmpty": "Total de Entradas 0",
+                    "infoFiltered": "Filtrado de _MAX_ entradas totales",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "search": "Filtrar"
+                },
+                dom: 'Blfrtip',
+                select: {
+                    style: 'multi',
+                    /*selector: 'td:first-child'*/
+                }, order: [[0, 'asc']],
+                buttons: [
+                    {
+                        extend: 'excel',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="far fa-file-excel"></i> Exportar a excel',
+                        exportOptions: {
+                            columns: [0]
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="far fa-file-pdf" title= "Guardar como PDF"></i> Pdf',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: [0]
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="fas fa-file-csv" title= "Guardar como CSV"></i> CSV',
+                        exportOptions: {
+                            columns: [0]
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        className: 'btn btn-default rounded-0',
+                        text: '<i class="fas fa-print"></i> Imprimir tabla',
+                        exportOptions: {
+                            columns: [0]
+                        }
+                    }
+                ]
+            });
+
+        });
+
+
+        arr_b1 = new Array();
+        function removeItemFromArr(arr, item) {
+            var i = arr.indexOf(item);
+            arr.splice(i, 1);
+        }
+
+        arr_b2 = new Array();
+        function removeItemFromArr(arr, item) {
+            var i = arr.indexOf(item);
+            arr.splice(i, 1);
+        }
+
+        $('[name="checks1[]"]').change(function () {
+            if ($(this).is(':checked')) {
+                arr_b1.push($(this).val());
+            } else {
+                removeItemFromArr(arr_b1, $(this).val());
+            }
+
+            var str = arr_b1.join(",");
+
+            $('#str1').text(str);
+            $('#arr1').text(str);
+        });
+
+        $('[name="checks2[]"]').change(function () {
+            if ($(this).is(':checked')) {
+                arr_b2.push($(this).val());
+            } else {
+                removeItemFromArr(arr_b2, $(this).val());
+            }
+
+            var str = arr_b2.join(",");
+
+            $('#str2').text(str);
+            $('#arr2').text(str);
+        });
+
+        function SeleccionCheck1() {
+            var roles1 = $('#arr1').text();
+
+	        if (roles1.length <= 0) {
+		        swal({
+			        title: "¡Error!",
+			        text: "Tiene que seleccionar un rol para autorizar.",
+			        icon: "error", //built in icons: success, warning, error, info
+			        timer: 5000, //timeOut for auto-close
+		        });
+			        return false;
+		        }
+		        else {
+				        swal({
+				            title: "¿Desea confirmar la solicitud?",
+				            text: "¡Se procederá a otorgar los permisos a los roles seleccionados!",
+				            type: "warning",
+				            showCancelButton: true,
+				            cancelButtonText: "Cancelar",
+				            confirmButtonColor: "#DD6B55",
+				            confirmButtonText: "Confirmar",
+				            closeOnConfirm: false,
+				            buttons: ["Cancelar", "Aceptar"]
+			        }).then(
+				        function (isConfirm) {
+					        if (isConfirm) {
+                                location.href = '@Url.Action("ViewRolesxTipo", "Role")?nombre=' + roles1 + "&tipo=A";
+                                roles1 = null;
+					        } else {
+						        swal("¡Cancelado!", "No se pudo realizar la acción solicitada", "error");
+					        }
+				        }
+			        );
+		        }
+        }
+
+        function SeleccionCheck2() {
+	        var roles2 = $('#arr2').text();
+
+	        if (roles2.length <= 0) {
+		        swal({
+			        title: "¡Error!",
+			        text: "Tiene que seleccionar un rol para desautorizar.",
+			        icon: "error", //built in icons: success, warning, error, info
+			        timer: 5000, //timeOut for auto-close
+		        });
+			        return false;
+		        }
+		        else {
+				        swal({
+				            title: "¿Desea confirmar la solicitud?",
+				            text: "¡Se procederá a desautorizar los permisos de los roles seleccionados!",
+				            type: "warning",
+				            showCancelButton: true,
+				            cancelButtonText: "Cancelar",
+				            confirmButtonColor: "#DD6B55",
+				            confirmButtonText: "Confirmar",
+				            closeOnConfirm: false,
+				            buttons: ["Cancelar", "Aceptar"]
+			        }).then(
+				        function (isConfirm) {
+					        if (isConfirm) {
+						        location.href = '@Url.Action("ViewRolesxTipo", "Role")?nombre=' + roles2 + "&tipo=AN";
+                                roles2 = null;
+					        } else {
+						        swal("¡Cancelado!", "No se pudo realizar la acción solicitada", "error");
+					        }
+				        }
+			        );
+		        }
+        }
+
+        window.history.replaceState({}, 'ViewRolesxTipo', '/Role/ViewRolesxTipo');
+    </script>
+
+}
