@@ -10,6 +10,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using GestorDocumentos.Servicios;
+using GestorDocumentos.Models.Request;
 
 namespace GestorDocumentos.Controllers
 {
@@ -168,7 +169,7 @@ namespace GestorDocumentos.Controllers
         }
 
         [HttpPost]
-        public JsonResult fields(int id)
+        public JsonResult fields(EncabezadoFields request)
         {
             listafecha fecha = new listafecha();
             listafecha listafecha = new listafecha();
@@ -180,21 +181,21 @@ namespace GestorDocumentos.Controllers
             var Efarmacia = (from ms in db.MantenimientoSubniveles join rxaxcxs in db.RoleXAreaXCarpetasXSubniveles
                              on ms.CarpetaEncabezadoid equals rxaxcxs.CarpetaEncabezadoid
                              where ms.Id == rxaxcxs.MantenimientoSubnivelesid && rxaxcxs.RoleName == rname
-                             && ms.CarpetaEncabezadoid == id
+                             && ms.CarpetaEncabezadoid == request.id
                              select ms.Id).ToList();
 
-            var mn = db.MantenimientoSubniveles.OrderBy(x => x.Descripcion).Where(ms => ms.CarpetaEncabezadoid == id);
+            var mn = db.MantenimientoSubniveles.OrderBy(x => x.Descripcion).Where(ms => ms.CarpetaEncabezadoid == request.id);
 
             if (Efarmacia.Count > 0)
             {
                 int numero = Efarmacia[0];
                 //var subnivel = db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && (ms.Descripcion.Contains("K0") || ms.Descripcion.Contains("K1") || ms.Descripcion.Contains("K2") || ms.Descripcion.Contains("K5") || ms.Descripcion.Contains("K6"))).Union(db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && (ms.Descripcion.Contains("H0") || ms.Descripcion.Contains("H1") || ms.Descripcion.Contains("H2") || ms.Descripcion.Contains("H5") || ms.Descripcion.Contains("H6")))).ToList();
-                var subnivel = _services.MS_Farmacias_PermisosLista(id, numero, 1);
+                var subnivel = _services.MS_Farmacias_PermisosLista(request.id, numero, 1);
                 
                 if (subnivel.Count > 0)
                 {
                     //mn = db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && !ms.Descripcion.Contains("K0") && !ms.Descripcion.Contains("K1") && !ms.Descripcion.Contains("K2") && !ms.Descripcion.Contains("K5") && !ms.Descripcion.Contains("K6") && !ms.Descripcion.Contains("H0") && !ms.Descripcion.Contains("H1") && !ms.Descripcion.Contains("H2") && !ms.Descripcion.Contains("H5") && !ms.Descripcion.Contains("H6")).Union(db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id && ms.Id == numero)); //original 20211112
-                    mn = _services.MS_Farmacias_Permisos(id, numero, 2);
+                    mn = _services.MS_Farmacias_Permisos(request.id, numero, 2);
                 }
                 else
                 {
@@ -203,7 +204,7 @@ namespace GestorDocumentos.Controllers
                     mn = (from ms in db.MantenimientoSubniveles
                           join rxaxcxs in db.RoleXAreaXCarpetasXSubniveles
                           on ms.CarpetaEncabezadoid equals rxaxcxs.CarpetaEncabezadoid
-                          where ms.Id == rxaxcxs.MantenimientoSubnivelesid && rxaxcxs.RoleName == rname && ms.CarpetaEncabezadoid == id
+                          where ms.Id == rxaxcxs.MantenimientoSubnivelesid && rxaxcxs.RoleName == rname && ms.CarpetaEncabezadoid == request.id
                           select ms);
 
                     // Modificado --> 20211112
@@ -212,21 +213,21 @@ namespace GestorDocumentos.Controllers
             }
             else
             {
-                mn = db.MantenimientoSubniveles.OrderBy(x => x.Descripcion).Where(ms => ms.CarpetaEncabezadoid == id);
+                mn = db.MantenimientoSubniveles.OrderBy(x => x.Descripcion).Where(ms => ms.CarpetaEncabezadoid == request.id);
             }
 
             //var mn = db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id);
             // var selects = db.MantenimientoSubniveles.Where(ms => ms.CarpetaEncabezadoid == id).Select(n => new { n.ConfCarpetaDetalle.Descripcion, n.ConfCarpetaDetalleId }).Distinct().ToList();
-            var tt = JsonConvert.SerializeObject(mn.ToList());
-            var IsFecha = db.ConfCarpetaDetalle.Where(fs => fs.CarpetaEncabezadoid == id).Select(tc => new { tc.Tipo_Campo.Descripcion, tc.Tipo_campoId }).Where(tc => tc.Descripcion == "Fecha").ToList();
-            var IsFechayhora = db.ConfCarpetaDetalle.Where(fs => fs.CarpetaEncabezadoid == id).Select(tc => new { tc.Tipo_Campo.Descripcion, tc.Tipo_campoId }).Where(tc => tc.Descripcion == "Fecha y Hora").ToList();
+            //var tt = JsonConvert.SerializeObject(mn.ToList());
+            var IsFecha = db.ConfCarpetaDetalle.Where(fs => fs.CarpetaEncabezadoid == request.id).Select(tc => new { tc.Tipo_Campo.Descripcion, tc.Tipo_campoId }).Where(tc => tc.Descripcion == "Fecha").ToList();
+            var IsFechayhora = db.ConfCarpetaDetalle.Where(fs => fs.CarpetaEncabezadoid == request.id).Select(tc => new { tc.Tipo_Campo.Descripcion, tc.Tipo_campoId }).Where(tc => tc.Descripcion == "Fecha y Hora").ToList();
             var query = (from unionccpms in
                            (from ms in db.MantenimientoSubniveles
                             join ccd in db.ConfCarpetaDetalle on ms.CarpetaEncabezadoid equals ccd.CarpetaEncabezadoid
 
-                            where ms.CarpetaEncabezadoid == id && ms.AreaId == ccd.AreaId && ccd.CarpetaEncabezadoid == id && ms.ConfCarpetaDetalleId == ccd.Id
+                            where ms.CarpetaEncabezadoid == request.id && ms.AreaId == ccd.AreaId && ccd.CarpetaEncabezadoid == request.id && ms.ConfCarpetaDetalleId == ccd.Id
                             select new { ms.ConfCarpetaDetalle.Descripcion, ms.ConfCarpetaDetalleId, ccd.NivelId, ccd.CarpetaEncabezadoid })
-                         where unionccpms.CarpetaEncabezadoid == id
+                         where unionccpms.CarpetaEncabezadoid == request.id
                          orderby unionccpms.NivelId
                          select new { unionccpms.Descripcion, unionccpms.ConfCarpetaDetalleId }
            ).Distinct().ToList();
@@ -247,8 +248,21 @@ namespace GestorDocumentos.Controllers
                 fecha.Tipo = 2;
 
             }
+
+            List<MantenimientoSubniveles> mSubnivel = new List<MantenimientoSubniveles>();
+            foreach (var item in mn)
+            {
+                mSubnivel.Add(new MantenimientoSubniveles
+                {
+                    Id = item.Id,
+                    AreaId = item.AreaId,
+                    CarpetaEncabezadoid = item.CarpetaEncabezadoid,
+                    ConfCarpetaDetalleId = item.ConfCarpetaDetalleId,
+                    Descripcion = item.Descripcion
+                });
+            }
             //return Json(new { options = JsonConvert.SerializeObject(mn.ToList()), selects = JsonConvert.SerializeObject(selects), fecha = JsonConvert.SerializeObject(fecha) });
-            return Json(new { options = JsonConvert.SerializeObject(mn.ToList()), selects = JsonConvert.SerializeObject(query), fecha = JsonConvert.SerializeObject(fecha) });
+            return Json(new { options = JsonConvert.SerializeObject(mSubnivel.ToList()), selects = JsonConvert.SerializeObject(query), fecha = JsonConvert.SerializeObject(fecha) });
         }
 
         public JsonResult GetAreayEncabezadoCarpetaId(int idarea)

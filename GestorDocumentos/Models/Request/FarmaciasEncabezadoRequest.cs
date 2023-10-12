@@ -20,4 +20,9 @@ namespace GestorDocumentos.Models.Request
         public FarmaciasSubnivelEncabezado farmaciasEncabezado { get; set; }
         public List<FarmaciasSubnivelDetalle> farmaciasDetalle { get; set; }
     }
+
+    public partial class EncabezadoFields
+    {
+        public int id { get; set; }
+    }
 }
