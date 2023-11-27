@@ -404,7 +404,7 @@ namespace GestorDocumentos.Servicios
 
                 List<SucursalesAbreviacionLdcom> modelSucursaAbreviacionlLd = new List<SucursalesAbreviacionLdcom>();
 
-                // Comparar los DataTables y encontrar registros nuevos en dataTableB
+                // Comparar los DataTables y encontrar registros nuevos en dataTableB: Se modifico el 27/11/2023.
                 var newRecordsInB = dtSucursal.AsEnumerable()
                     .Where(rowB => !dtDetalles.AsEnumerable()
                         .Any(rowA => rowA.Field<short>("suc_id") == rowB.Field<short>("suc_id")))
